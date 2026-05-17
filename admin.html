@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solowave Admin — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ===== VARIABLES ===== */
+:root {
+  --gold: #c9a84c;
+  --gold-light: #e8c96d;
+  --gold-dark: #a07830;
+  --gold-glow: rgba(201,168,76,0.25);
+  --black: #0a0a0a;
+  --dark: #111111;
+  --dark-2: #1a1a1a;
+  --dark-3: #242424;
+  --dark-4: #2e2e2e;
+  --text: #e8e8e8;
+  --text-muted: #888888;
+  --text-dim: #555555;
+  --glass: rgba(255,255,255,0.03);
+  --glass-border: rgba(201,168,76,0.15);
+  --radius: 10px;
+  --radius-lg: 16px;
+  --transition: all 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
+  --sidebar-w: 240px;
+  --green: #2ecc71;
+  --yellow: #f1c40f;
+  --red: #e74c3c;
+  --blue: #3498db;
+}
+/* Light mode overrides */
+body.light-mode {
+  --black: #f5f0e8;
+  --dark: #ede8dc;
+  --dark-2: #e0d9cc;
+  --dark-3: #d4ccbc;
+  --dark-4: #c8bfac;
+  --text: #1a1a1a;
+  --text-muted: #555555;
+  --text-dim: #888888;
+  --glass: rgba(0,0,0,0.03);
+  --glass-border: rgba(160,120,48,0.2);
+}
+
+/* ===== RESET ===== */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;font-size:16px;}
+body{background:var(--black);color:var(--text);font-family:'Montserrat',sans-serif;font-weight:300;overflow-x:hidden;line-height:1.6;transition:background 0.3s,color 0.3s;}
+a{text-decoration:none;color:inherit;}
+ul{list-style:none;}
+img{max-width:100%;display:block;}
+button{cursor:pointer;border:none;background:none;font-family:inherit;}
+input,select,textarea{font-family:inherit;}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:var(--dark);}
+::-webkit-scrollbar-thumb{background:var(--gold-dark);border-radius:2px;}
+
+/* ===== LOGIN SCREEN ===== */
+#loginScreen {
+  position:fixed;inset:0;z-index:9999;
+  background:var(--black);
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:0;
+}
+.login-box {
+  background:var(--dark-2);
+  border:1px solid var(--glass-border);
+  border-radius:var(--radius-lg);
+  padding:56px 48px;
+  width:100%;max-width:420px;
+  text-align:center;
+  box-shadow:0 40px 80px rgba(0,0,0,0.6),0 0 60px rgba(201,168,76,0.08);
+}
+.login-logo {
+  font-family:'Playfair Display',serif;
+  font-size:2rem;font-weight:700;letter-spacing:0.4em;
+  background:linear-gradient(135deg,#a07830,#e8c96d,#c9a84c);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:6px;
+}
+.login-sub {
+  font-size:0.6rem;letter-spacing:0.4em;text-transform:uppercase;
+  color:var(--text-muted);margin-bottom:40px;
+}
+.login-divider {
+  display:flex;align-items:center;gap:12px;margin-bottom:32px;
+}
+.login-divider-line{flex:1;height:1px;background:var(--glass-border);}
+.login-divider-diamond{width:5px;height:5px;background:var(--gold);transform:rotate(45deg);}
+.login-label {
+  display:block;text-align:left;
+  font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--text-muted);margin-bottom:8px;
+}
+.login-input {
+  width:100%;padding:14px 18px;
+  background:var(--dark-3);border:1px solid var(--glass-border);
+  border-radius:var(--radius);color:var(--text);
+  font-size:0.9rem;letter-spacing:0.05em;
+  transition:var(--transition);outline:none;
+  margin-bottom:24px;
+}
+.login-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-glow);}
+.login-btn {
+  width:100%;padding:15px;
+  background:linear-gradient(135deg,var(--gold-dark),var(--gold),var(--gold-light));
+  color:var(--black);font-weight:700;font-size:0.75rem;
+  letter-spacing:0.25em;text-transform:uppercase;
+  border-radius:var(--radius);transition:var(--transition);
+}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(201,168,76,0.4);}
+.login-error {
+  color:var(--red);font-size:0.75rem;letter-spacing:0.1em;
+  margin-top:16px;display:none;
+}
+.login-error.show{display:block;}
+
+/* ===== ADMIN LAYOUT ===== */
+#adminApp{display:none;}
+#adminApp.visible{display:flex;}
+.admin-layout{display:flex;min-height:100vh;width:100%;}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width:var(--sidebar-w);flex-shrink:0;
+  background:var(--dark);
+  border-right:1px solid var(--glass-border);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;
+  z-index:100;transition:transform 0.3s ease;
+  overflow-y:auto;
+}
+.sidebar-logo {
+  padding:28px 24px 20px;
+  border-bottom:1px solid var(--glass-border);
+}
+.sidebar-logo-text {
+  font-family:'Playfair Display',serif;
+  font-size:1.2rem;font-weight:700;letter-spacing:0.3em;
+  background:linear-gradient(135deg,#a07830,#e8c96d,#c9a84c);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.sidebar-logo-sub {
+  font-size:0.55rem;letter-spacing:0.3em;text-transform:uppercase;
+  color:var(--text-dim);margin-top:3px;
+}
+.sidebar-nav{padding:20px 0;flex:1;}
+.nav-item {
+  display:flex;align-items:center;gap:12px;
+  padding:13px 24px;
+  font-size:0.72rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--text-muted);cursor:pointer;
+  transition:var(--transition);position:relative;
+  border-left:2px solid transparent;
+}
+.nav-item:hover{color:var(--gold);background:rgba(201,168,76,0.05);}
+.nav-item.active{
+  color:var(--gold);background:rgba(201,168,76,0.08);
+  border-left-color:var(--gold);
+}
+.nav-item svg{width:16px;height:16px;flex-shrink:0;}
+.sidebar-footer{
+  padding:20px 24px;
+  border-top:1px solid var(--glass-border);
+}
+.sidebar-theme-toggle {
+  display:flex;align-items:center;gap:10px;
+  font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--text-muted);cursor:pointer;
+  padding:10px 0;transition:color 0.2s;
+}
+.sidebar-theme-toggle:hover{color:var(--gold);}
+.toggle-track {
+  width:36px;height:18px;background:var(--dark-4);
+  border-radius:9px;position:relative;transition:background 0.3s;
+  border:1px solid var(--glass-border);
+}
+.toggle-thumb {
+  position:absolute;top:2px;left:2px;
+  width:12px;height:12px;border-radius:50%;
+  background:var(--gold-dark);transition:transform 0.3s,background 0.3s;
+}
+body.light-mode .toggle-track{background:rgba(201,168,76,0.2);}
+body.light-mode .toggle-thumb{transform:translateX(18px);background:var(--gold);}
+
+/* ===== TOPBAR ===== */
+.main-area{
+  margin-left:var(--sidebar-w);flex:1;
+  display:flex;flex-direction:column;min-height:100vh;
+}
+.topbar {
+  background:var(--dark);
+  border-bottom:1px solid var(--glass-border);
+  padding:0 32px;height:64px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:50;
+  backdrop-filter:blur(10px);
+}
+.topbar-left{display:flex;align-items:center;gap:16px;}
+.topbar-title {
+  font-family:'Playfair Display',serif;
+  font-size:1.3rem;font-weight:600;color:var(--text);
+}
+.topbar-right{display:flex;align-items:center;gap:16px;}
+.topbar-date {
+  font-size:0.65rem;letter-spacing:0.15em;color:var(--text-muted);
+}
+.logout-btn {
+  display:flex;align-items:center;gap:8px;
+  padding:8px 18px;
+  border:1px solid rgba(231,76,60,0.4);
+  color:#e74c3c;border-radius:var(--radius);
+  font-size:0.65rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;
+  transition:var(--transition);
+}
+.logout-btn:hover{background:rgba(231,76,60,0.1);border-color:#e74c3c;}
+.menu-toggle{display:none;color:var(--text-muted);padding:4px;}
+
+/* ===== CONTENT ===== */
+.content{padding:32px;flex:1;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+/* ===== STAT CARDS ===== */
+.stats-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:20px;margin-bottom:32px;
+}
+.stat-card {
+  background:var(--dark-2);
+  border:1px solid var(--glass-border);
+  border-radius:var(--radius-lg);
+  padding:24px;position:relative;overflow:hidden;
+  transition:var(--transition);
+}
+.stat-card::before {
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  opacity:0;transition:opacity 0.3s;
+}
+.stat-card:hover{transform:translateY(-3px);border-color:rgba(201,168,76,0.3);}
+.stat-card:hover::before{opacity:1;}
+.stat-icon {
+  width:44px;height:44px;border-radius:10px;
+  background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:16px;color:var(--gold);
+}
+.stat-icon svg{width:20px;height:20px;}
+.stat-value {
+  font-family:'Playfair Display',serif;
+  font-size:1.8rem;font-weight:700;color:var(--text);
+  line-height:1;margin-bottom:6px;
+}
+.stat-label {
+  font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--text-muted);
+}
+.stat-change {
+  position:absolute;top:20px;right:20px;
+  font-size:0.65rem;font-weight:600;
+  padding:3px 8px;border-radius:20px;
+}
+.stat-change.up{background:rgba(46,204,113,0.15);color:var(--green);}
+.stat-change.down{background:rgba(231,76,60,0.15);color:var(--red);}
+
+/* ===== SECTION CARD ===== */
+.section-card {
+  background:var(--dark-2);
+  border:1px solid var(--glass-border);
+  border-radius:var(--radius-lg);
+  overflow:hidden;margin-bottom:24px;
+}
+.section-card-header {
+  padding:20px 24px;
+  border-bottom:1px solid var(--glass-border);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:12px;
+}
+.section-card-title {
+  font-family:'Playfair Display',serif;
+  font-size:1.1rem;font-weight:600;color:var(--text);
+}
+.section-card-body{padding:0;}
+
+/* ===== TABLE ===== */
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+thead tr{border-bottom:1px solid var(--glass-border);}
+th {
+  padding:12px 16px;
+  font-size:0.6rem;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--text-muted);text-align:left;white-space:nowrap;
+  background:var(--dark-3);
+}
+td {
+  padding:14px 16px;
+  font-size:0.8rem;color:var(--text);
+  border-bottom:1px solid rgba(255,255,255,0.04);
+  vertical-align:middle;
+}
+tbody tr:hover{background:rgba(201,168,76,0.04);}
+tbody tr:last-child td{border-bottom:none;}
+
+/* ===== BADGES ===== */
+.badge {
+  display:inline-flex;align-items:center;gap:5px;
+  padding:4px 10px;border-radius:20px;
+  font-size:0.6rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;
+  white-space:nowrap;
+}
+.badge-green{background:rgba(46,204,113,0.15);color:var(--green);border:1px solid rgba(46,204,113,0.3);}
+.badge-yellow{background:rgba(241,196,15,0.15);color:var(--yellow);border:1px solid rgba(241,196,15,0.3);}
+.badge-red{background:rgba(231,76,60,0.15);color:var(--red);border:1px solid rgba(231,76,60,0.3);}
+.badge-blue{background:rgba(52,152,219,0.15);color:var(--blue);border:1px solid rgba(52,152,219,0.3);}
+.badge-gold{background:rgba(201,168,76,0.15);color:var(--gold);border:1px solid rgba(201,168,76,0.3);}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
+
+/* ===== CONTROLS ===== */
+.controls-row {
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+}
+.search-input {
+  padding:9px 14px;
+  background:var(--dark-3);border:1px solid var(--glass-border);
+  border-radius:var(--radius);color:var(--text);
+  font-size:0.8rem;outline:none;transition:var(--transition);
+  min-width:200px;
+}
+.search-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-glow);}
+.filter-select {
+  padding:9px 14px;
+  background:var(--dark-3);border:1px solid var(--glass-border);
+  border-radius:var(--radius);color:var(--text);
+  font-size:0.8rem;outline:none;cursor:pointer;transition:var(--transition);
+}
+.filter-select:focus{border-color:var(--gold);}
+.export-btn {
+  display:flex;align-items:center;gap:7px;
+  padding:9px 16px;
+  border:1px solid var(--glass-border);
+  color:var(--gold);border-radius:var(--radius);
+  font-size:0.65rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;
+  transition:var(--transition);background:transparent;
+}
+.export-btn:hover{background:rgba(201,168,76,0.1);border-color:var(--gold);}
+.export-btn svg{width:14px;height:14px;}
+
+/* ===== REVENUE CHART ===== */
+.chart-container{padding:24px;}
+.chart-bars {
+  display:flex;align-items:flex-end;gap:8px;
+  height:180px;padding-bottom:28px;position:relative;
+}
+.chart-bars::before {
+  content:'';position:absolute;left:0;right:0;bottom:28px;
+  border-bottom:1px solid var(--glass-border);
+}
+.chart-bar-wrap {
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;gap:6px;height:100%;justify-content:flex-end;
+}
+.chart-bar {
+  width:100%;border-radius:4px 4px 0 0;
+  background:linear-gradient(to top,var(--gold-dark),var(--gold));
+  transition:height 0.8s cubic-bezier(0.25,0.46,0.45,0.94);
+  position:relative;cursor:pointer;min-height:4px;
+}
+.chart-bar:hover{background:linear-gradient(to top,var(--gold),var(--gold-light));}
+.chart-bar-tooltip {
+  position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);
+  background:var(--dark-4);border:1px solid var(--glass-border);
+  padding:4px 8px;border-radius:6px;
+  font-size:0.6rem;color:var(--gold);white-space:nowrap;
+  opacity:0;pointer-events:none;transition:opacity 0.2s;
+}
+.chart-bar:hover .chart-bar-tooltip{opacity:1;}
+.chart-label {
+  font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--text-dim);text-align:center;
+}
+
+/* ===== PRODUCTS GRID ===== */
+.products-grid {
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:16px;padding:20px;
+}
+.product-row {
+  background:var(--dark-3);border:1px solid var(--glass-border);
+  border-radius:var(--radius);padding:16px;
+  display:flex;align-items:center;gap:14px;
+  transition:var(--transition);
+}
+.product-row:hover{border-color:rgba(201,168,76,0.3);}
+.product-img {
+  width:56px;height:56px;border-radius:8px;
+  object-fit:cover;flex-shrink:0;
+  border:1px solid var(--glass-border);
+}
+.product-info{flex:1;min-width:0;}
+.product-name {
+  font-size:0.82rem;font-weight:600;color:var(--text);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  margin-bottom:3px;
+}
+.product-series {
+  font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:4px;
+}
+.product-price{font-size:0.75rem;color:var(--text-muted);}
+.stock-toggle {
+  padding:6px 12px;border-radius:20px;
+  font-size:0.6rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;
+  cursor:pointer;transition:var(--transition);border:1px solid;
+  white-space:nowrap;flex-shrink:0;
+}
+.stock-in{background:rgba(46,204,113,0.1);color:var(--green);border-color:rgba(46,204,113,0.3);}
+.stock-in:hover{background:rgba(46,204,113,0.2);}
+.stock-out{background:rgba(231,76,60,0.1);color:var(--red);border-color:rgba(231,76,60,0.3);}
+.stock-out:hover{background:rgba(231,76,60,0.2);}
+.stock-limited{background:rgba(241,196,15,0.1);color:var(--yellow);border-color:rgba(241,196,15,0.3);}
+.stock-limited:hover{background:rgba(241,196,15,0.2);}
+
+/* ===== MESSAGES ===== */
+.message-item {
+  padding:20px 24px;
+  border-bottom:1px solid rgba(255,255,255,0.04);
+  transition:background 0.2s;cursor:pointer;
+}
+.message-item:last-child{border-bottom:none;}
+.message-item:hover{background:rgba(201,168,76,0.04);}
+.message-item.unread{border-left:3px solid var(--gold);}
+.message-item.read{border-left:3px solid transparent;}
+.message-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-wrap:wrap;gap:8px;}
+.message-from{font-size:0.82rem;font-weight:600;color:var(--text);}
+.message-date{font-size:0.65rem;color:var(--text-dim);}
+.message-subject{font-size:0.75rem;color:var(--gold);margin-bottom:4px;}
+.message-preview{font-size:0.75rem;color:var(--text-muted);line-height:1.5;}
+.message-actions{display:flex;gap:8px;margin-top:10px;}
+.msg-btn {
+  padding:5px 12px;border-radius:6px;
+  font-size:0.6rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;
+  cursor:pointer;transition:var(--transition);border:1px solid var(--glass-border);
+  color:var(--text-muted);background:transparent;
+}
+.msg-btn:hover{border-color:var(--gold);color:var(--gold);}
+.msg-btn.mark-read{color:var(--green);border-color:rgba(46,204,113,0.3);}
+.msg-btn.mark-read:hover{background:rgba(46,204,113,0.1);}
+
+/* ===== EMPTY STATE ===== */
+.empty-state {
+  text-align:center;padding:60px 24px;
+  color:var(--text-muted);
+}
+.empty-state svg{width:48px;height:48px;margin:0 auto 16px;opacity:0.3;}
+.empty-state p{font-size:0.85rem;letter-spacing:0.1em;}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:1100px){
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:900px){
+  :root{--sidebar-w:0px;}
+  .sidebar{transform:translateX(-240px);width:240px;}
+  .sidebar.open{transform:translateX(0);}
+  .main-area{margin-left:0;}
+  .menu-toggle{display:flex;}
+  .sidebar-overlay{
+    display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);
+    z-index:99;
+  }
+  .sidebar-overlay.show{display:block;}
+}
+@media(max-width:600px){
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  .content{padding:16px;}
+  .topbar{padding:0 16px;}
+  .products-grid{grid-template-columns:1fr;}
+  .controls-row{flex-direction:column;align-items:stretch;}
+  .search-input,.filter-select{width:100%;}
+}
+@media(max-width:400px){
+  .stats-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== LOGIN SCREEN ===== -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">SOLOWAVE</div>
+    <div class="login-sub">Admin Portal</div>
+    <div class="login-divider">
+      <div class="login-divider-line"></div>
+      <div class="login-divider-diamond"></div>
+      <div class="login-divider-line"></div>
+    </div>
+    <label class="login-label" for="adminPass">Access Password</label>
+    <input class="login-input" type="password" id="adminPass" placeholder="Enter password" autocomplete="current-password">
+    <button class="login-btn" onclick="doLogin()">Enter Dashboard</button>
+    <div class="login-error" id="loginError">Incorrect password. Please try again.</div>
+  </div>
+</div>
+
+<!-- ===== ADMIN APP ===== -->
+<div id="adminApp">
+  <div class="admin-layout">
+
+    <!-- Sidebar Overlay (mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-text">SOLOWAVE</div>
+        <div class="sidebar-logo-sub">Admin Dashboard</div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-item active" onclick="switchTab('dashboard',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Dashboard
+        </div>
+        <div class="nav-item" onclick="switchTab('orders',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+          Orders
+        </div>
+        <div class="nav-item" onclick="switchTab('products',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+          Products
+        </div>
+        <div class="nav-item" onclick="switchTab('customers',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          Customers
+        </div>
+        <div class="nav-item" onclick="switchTab('messages',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          Messages
+          <span id="unreadBadge" style="margin-left:auto;background:var(--gold);color:var(--black);font-size:0.55rem;font-weight:700;padding:2px 7px;border-radius:10px;display:none;"></span>
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-theme-toggle" onclick="toggleTheme()">
+          <div class="toggle-track"><div class="toggle-thumb"></div></div>
+          <span id="themeLabel">Dark Mode</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ===== MAIN AREA ===== -->
+    <div class="main-area">
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="menu-toggle" onclick="openSidebar()">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <div class="topbar-title" id="topbarTitle">Dashboard</div>
+        </div>
+        <div class="topbar-right">
+          <div class="topbar-date" id="topbarDate"></div>
+          <button class="logout-btn" onclick="doLogout()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Logout
+          </button>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <main class="content">
+
+        <!-- ===== DASHBOARD TAB ===== -->
+        <div class="tab-panel active" id="tab-dashboard">
+          <div class="stats-grid" id="statsGrid"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;" class="dash-grid">
+            <!-- Revenue Chart -->
+            <div class="section-card">
+              <div class="section-card-header">
+                <div class="section-card-title">Revenue Overview</div>
+                <span style="font-size:0.65rem;color:var(--text-muted);">Last 6 months</span>
+              </div>
+              <div class="chart-container">
+                <div class="chart-bars" id="revenueChart"></div>
+              </div>
+            </div>
+            <!-- Recent Orders -->
+            <div class="section-card">
+              <div class="section-card-header">
+                <div class="section-card-title">Recent Orders</div>
+                <button class="export-btn" onclick="switchTab('orders',document.querySelector('.nav-item:nth-child(2)'))">View All</button>
+              </div>
+              <div class="section-card-body table-wrap">
+                <table id="recentOrdersTable">
+                  <thead><tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Status</th></tr></thead>
+                  <tbody id="recentOrdersBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== ORDERS TAB ===== -->
+        <div class="tab-panel" id="tab-orders">
+          <div class="section-card">
+            <div class="section-card-header">
+              <div class="section-card-title">All Orders</div>
+              <div class="controls-row">
+                <input class="search-input" type="text" id="orderSearch" placeholder="Search name or order ID…" oninput="renderOrders()">
+                <select class="filter-select" id="orderStatusFilter" onchange="renderOrders()">
+                  <option value="">All Statuses</option>
+                  <option value="confirmed">Confirmed</option>
+                  <option value="pending">Pending</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+                <button class="export-btn" onclick="exportCSV('orders')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Export CSV
+                </button>
+              </div>
+            </div>
+            <div class="section-card-body table-wrap">
+              <table>
+                <thead><tr><th>Order ID</th><th>Customer</th><th>Product</th><th>Qty</th><th>Amount</th><th>Payment</th><th>Status</th><th>Date</th></tr></thead>
+                <tbody id="ordersBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== PRODUCTS TAB ===== -->
+        <div class="tab-panel" id="tab-products">
+          <div class="section-card">
+            <div class="section-card-header">
+              <div class="section-card-title">Product Inventory</div>
+              <div class="controls-row">
+                <input class="search-input" type="text" id="productSearch" placeholder="Search products…" oninput="renderProducts()">
+                <button class="export-btn" onclick="exportCSV('products')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Export CSV
+                </button>
+              </div>
+            </div>
+            <div class="section-card-body">
+              <div class="products-grid" id="productsGrid"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== CUSTOMERS TAB ===== -->
+        <div class="tab-panel" id="tab-customers">
+          <div class="section-card">
+            <div class="section-card-header">
+              <div class="section-card-title">Customers & Subscribers</div>
+              <div class="controls-row">
+                <input class="search-input" type="text" id="customerSearch" placeholder="Search customers…" oninput="renderCustomers()">
+                <button class="export-btn" onclick="exportCSV('customers')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Export CSV
+                </button>
+              </div>
+            </div>
+            <div class="section-card-body table-wrap">
+              <table>
+                <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Orders</th><th>Type</th><th>Joined</th></tr></thead>
+                <tbody id="customersBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== MESSAGES TAB ===== -->
+        <div class="tab-panel" id="tab-messages">
+          <div class="section-card">
+            <div class="section-card-header">
+              <div class="section-card-title">Contact Messages</div>
+              <div class="controls-row">
+                <select class="filter-select" id="msgFilter" onchange="renderMessages()">
+                  <option value="">All Messages</option>
+                  <option value="unread">Unread</option>
+                  <option value="read">Read</option>
+                </select>
+                <button class="export-btn" onclick="exportCSV('messages')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Export CSV
+                </button>
+              </div>
+            </div>
+            <div class="section-card-body" id="messagesBody"></div>
+          </div>
+        </div>
+
+      </main>
+    </div><!-- /main-area -->
+  </div><!-- /admin-layout -->
+</div><!-- /adminApp -->
+
+<!-- Firebase DB Module — real-time listeners -->
+<script type="module" src="db.js"></script>
+
+<script src="watches-data.js"></script>
+
+<!-- Firebase Integration -->
+<script type="module" src="firebase.js"></script>
+
+<script>
+/* ============================================================
+   SOLOWAVE ADMIN DASHBOARD — MAIN SCRIPT
+   ============================================================ */
+
+const ADMIN_PASSWORD = 'solowave2024';
+const LS = {
+  orders:      'solowaveOrders',
+  wishlist:    'solowaveWishlist',
+  subscribers: 'solowaveSubscribers',
+  messages:    'solowaveMessages',
+  users:       'solowaveUsers',
+  stock:       'solowaveStock',
+  theme:       'solowaveTheme',
+  auth:        'solowaveAdminAuth',
+  msgRead:     'solowaveAdminMsgRead',
+};
+
+/* ---- helpers ---- */
+function lsGet(key, fallback = []) {
+  try { return JSON.parse(localStorage.getItem(key)) || fallback; }
+  catch { return fallback; }
+}
+function lsSet(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
+
+function fmtRs(n) {
+  n = Number(n) || 0;
+  return 'Rs' + n.toLocaleString('en-IN');
+}
+function fmtDate(d) {
+  if (!d) return '—';
+  const dt = new Date(d);
+  if (isNaN(dt)) return d;
+  return dt.toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
+}
+function statusBadge(s) {
+  s = (s || 'pending').toLowerCase();
+  const map = { confirmed:'badge-green', pending:'badge-yellow', cancelled:'badge-red', delivered:'badge-blue' };
+  const cls = map[s] || 'badge-gold';
+  return `<span class="badge ${cls}"><span class="badge-dot"></span>${cap(s)}</span>`;
+}
+function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+function escHtml(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ============================================================
+   AUTH
+   ============================================================ */
+function doLogin() {
+  const pass = document.getElementById('adminPass').value;
+  if (pass === ADMIN_PASSWORD) {
+    lsSet(LS.auth, true);
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminApp').classList.add('visible');
+    initApp();
+  } else {
+    document.getElementById('loginError').classList.add('show');
+    document.getElementById('adminPass').value = '';
+    document.getElementById('adminPass').focus();
+  }
+}
+function doLogout() {
+  lsSet(LS.auth, false);
+  document.getElementById('adminApp').classList.remove('visible');
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('adminPass').value = '';
+  document.getElementById('loginError').classList.remove('show');
+}
+document.getElementById('adminPass').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+
+/* ============================================================
+   INIT
+   ============================================================ */
+function initApp() {
+  setDate();
+  applyTheme();
+
+  // ── Real-time Orders from Firestore ──────────────────────
+  function loadOrders() {
+    if (typeof window.swListenOrders === 'function') {
+      // Real-time listener — updates automatically
+      window.swListenOrders(function(orders) {
+        localStorage.setItem('solowaveOrders', JSON.stringify(orders));
+        renderDashboard();
+        renderOrders();
+        showToast('Orders synced from Firebase ✓', 'success');
+      });
+    } else if (typeof window.swGetAllOrders === 'function') {
+      window.swGetAllOrders(function(orders) {
+        localStorage.setItem('solowaveOrders', JSON.stringify(orders));
+        renderDashboard();
+        renderOrders();
+      });
+    } else {
+      renderDashboard();
+      renderOrders();
+    }
+  }
+
+  // ── Real-time Messages from Firestore ────────────────────
+  function loadMessages() {
+    if (typeof window.swListenMessages === 'function') {
+      window.swListenMessages(function(msgs) {
+        localStorage.setItem('solowaveMessages', JSON.stringify(msgs));
+        renderMessages();
+        updateUnreadBadge();
+      });
+    } else if (typeof window.swGetMessages === 'function') {
+      window.swGetMessages(function(msgs) {
+        localStorage.setItem('solowaveMessages', JSON.stringify(msgs));
+        renderMessages();
+        updateUnreadBadge();
+      });
+    } else {
+      renderMessages();
+    }
+  }
+
+  // ── Users from Firestore ─────────────────────────────────
+  function loadUsers() {
+    if (typeof window.swGetAllUsers === 'function') {
+      window.swGetAllUsers(function(users) {
+        localStorage.setItem('solowaveUsers', JSON.stringify(users));
+        renderCustomers();
+      });
+    } else if (typeof window.swGetUsers === 'function') {
+      window.swGetUsers(function(users) {
+        localStorage.setItem('solowaveUsers', JSON.stringify(users));
+        renderCustomers();
+      });
+    } else {
+      renderCustomers();
+    }
+  }
+
+  // Firebase modules load async — try immediately, retry after delay
+  loadOrders();
+  loadMessages();
+  loadUsers();
+
+  setTimeout(function() {
+    if (typeof window.swListenOrders !== 'function' && typeof window.swGetAllOrders !== 'function') {
+      renderDashboard(); renderOrders();
+    }
+    if (typeof window.swListenMessages !== 'function' && typeof window.swGetMessages !== 'function') {
+      renderMessages();
+    }
+    if (typeof window.swGetAllUsers !== 'function' && typeof window.swGetUsers !== 'function') {
+      renderCustomers();
+    }
+  }, 2500);
+
+  renderProducts();
+}
+
+function setDate() {
+  const d = new Date();
+  document.getElementById('topbarDate').textContent =
+    d.toLocaleDateString('en-IN', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+}
+
+/* ============================================================
+   THEME
+   ============================================================ */
+function applyTheme() {
+  const t = localStorage.getItem(LS.theme);
+  if (t === 'light') {
+    document.body.classList.add('light-mode');
+    document.getElementById('themeLabel').textContent = 'Light Mode';
+  } else {
+    document.body.classList.remove('light-mode');
+    document.getElementById('themeLabel').textContent = 'Dark Mode';
+  }
+}
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light-mode');
+  localStorage.setItem(LS.theme, isLight ? 'light' : 'dark');
+  document.getElementById('themeLabel').textContent = isLight ? 'Light Mode' : 'Dark Mode';
+}
+
+/* ============================================================
+   SIDEBAR / TABS
+   ============================================================ */
+function switchTab(name, el) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  if (el) el.classList.add('active');
+  const titles = { dashboard:'Dashboard', orders:'Orders', products:'Products', customers:'Customers', messages:'Messages' };
+  document.getElementById('topbarTitle').textContent = titles[name] || cap(name);
+  closeSidebar();
+}
+function openSidebar() {
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('sidebarOverlay').classList.add('show');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('show');
+}
+
+/* ============================================================
+   DASHBOARD
+   ============================================================ */
+function renderDashboard() {
+  const orders    = lsGet(LS.orders);
+  const wishlist  = lsGet(LS.wishlist);
+  const users     = lsGet(LS.users);
+  const subs      = lsGet(LS.subscribers);
+
+  const totalRevenue = orders.reduce((s, o) => s + (Number(o.total || o.amount || o.price || 0)), 0);
+  const totalCustomers = new Set([
+    ...users.map(u => u.email || u.id),
+    ...subs.map(s => s.email)
+  ]).size;
+
+  const statsData = [
+    {
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>`,
+      value: orders.length,
+      label: 'Total Orders',
+      change: '+12%', up: true
+    },
+    {
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>`,
+      value: fmtRs(totalRevenue),
+      label: 'Total Revenue',
+      change: '+8%', up: true
+    },
+    {
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>`,
+      value: totalCustomers,
+      label: 'Total Customers',
+      change: '+5%', up: true
+    },
+    {
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>`,
+      value: Array.isArray(wishlist) ? wishlist.length : 0,
+      label: 'Wishlist Items',
+      change: '+3%', up: true
+    }
+  ];
+
+  const grid = document.getElementById('statsGrid');
+  grid.innerHTML = statsData.map(s => `
+    <div class="stat-card">
+      <div class="stat-icon">${s.icon}</div>
+      <div class="stat-value">${escHtml(String(s.value))}</div>
+      <div class="stat-label">${s.label}</div>
+      <span class="stat-change ${s.up ? 'up' : 'down'}">${s.change}</span>
+    </div>
+  `).join('');
+
+  renderRevenueChart(orders);
+  renderRecentOrders(orders);
+}
+
+function renderRevenueChart(orders) {
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const now = new Date();
+  const buckets = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    buckets.push({ label: months[d.getMonth()], year: d.getFullYear(), month: d.getMonth(), total: 0 });
+  }
+
+  orders.forEach(o => {
+    const d = new Date(o.date || o.createdAt || o.timestamp || Date.now());
+    const b = buckets.find(b => b.month === d.getMonth() && b.year === d.getFullYear());
+    if (b) b.total += Number(o.total || o.amount || o.price || 0);
+  });
+
+  // Add demo data if empty
+  if (buckets.every(b => b.total === 0)) {
+    const demo = [1200000, 1850000, 1400000, 2100000, 1750000, 2400000];
+    buckets.forEach((b, i) => b.total = demo[i]);
+  }
+
+  const max = Math.max(...buckets.map(b => b.total), 1);
+  const chart = document.getElementById('revenueChart');
+  chart.innerHTML = buckets.map(b => {
+    const pct = Math.max((b.total / max) * 100, 2);
+    return `
+      <div class="chart-bar-wrap">
+        <div class="chart-bar" style="height:${pct}%">
+          <div class="chart-bar-tooltip">${fmtRs(b.total)}</div>
+        </div>
+        <div class="chart-label">${b.label}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderRecentOrders(orders) {
+  const tbody = document.getElementById('recentOrdersBody');
+  const recent = [...orders].reverse().slice(0, 8);
+  if (!recent.length) {
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:32px;">No orders yet</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = recent.map(o => `
+    <tr>
+      <td style="font-family:'Playfair Display',serif;color:var(--gold);">#${escHtml(o.id || o.orderId || '—')}</td>
+      <td>${escHtml(o.customerName || o.name || o.customer || '—')}</td>
+      <td style="font-weight:600;">${fmtRs(o.total || o.amount || o.price || 0)}</td>
+      <td>${statusBadge(o.status)}</td>
+    </tr>
+  `).join('');
+}
+
+/* ============================================================
+   ORDERS TAB
+   ============================================================ */
+function renderOrders() {
+  let orders = lsGet(LS.orders);
+  const search = (document.getElementById('orderSearch')?.value || '').toLowerCase();
+  const status = (document.getElementById('orderStatusFilter')?.value || '').toLowerCase();
+
+  if (search) {
+    orders = orders.filter(o =>
+      (o.customerName || o.name || o.customer || '').toLowerCase().includes(search) ||
+      String(o.id || o.orderId || '').toLowerCase().includes(search)
+    );
+  }
+  if (status) {
+    orders = orders.filter(o => (o.status || 'pending').toLowerCase() === status);
+  }
+
+  const tbody = document.getElementById('ordersBody');
+  if (!orders.length) {
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--text-muted);padding:40px;">No orders found</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = [...orders].reverse().map(o => `
+    <tr>
+      <td style="font-family:'Playfair Display',serif;color:var(--gold);font-weight:600;">#${escHtml(o.id || o.orderId || '—')}</td>
+      <td>
+        <div style="font-weight:500;">${escHtml(o.customerName || o.name || o.customer || '—')}</div>
+        <div style="font-size:0.7rem;color:var(--text-muted);">${escHtml(o.email || '')}</div>
+      </td>
+      <td>
+        <div style="font-size:0.8rem;">${escHtml(o.productName || o.product || o.watchName || '—')}</div>
+        <div style="font-size:0.65rem;color:var(--text-muted);">${escHtml(o.series || '')}</div>
+      </td>
+      <td style="text-align:center;">${escHtml(String(o.qty || o.quantity || 1))}</td>
+      <td style="font-weight:600;color:var(--gold);">${fmtRs(o.total || o.amount || o.price || 0)}</td>
+      <td><span class="badge badge-blue">${escHtml(o.payment || o.paymentMethod || 'Online')}</span></td>
+      <td>${statusBadge(o.status)}</td>
+      <td style="color:var(--text-muted);font-size:0.75rem;">${fmtDate(o.date || o.createdAt || o.timestamp)}</td>
+    </tr>
+  `).join('');
+}
+
+/* ============================================================
+   PRODUCTS TAB
+   ============================================================ */
+function renderProducts() {
+  const stockData = lsGet(LS.stock, {});
+  const search = (document.getElementById('productSearch')?.value || '').toLowerCase();
+
+  let watches = (typeof WATCHES_DATA !== 'undefined') ? WATCHES_DATA : [];
+  if (search) {
+    watches = watches.filter(w =>
+      w.name.toLowerCase().includes(search) ||
+      (w.series || '').toLowerCase().includes(search)
+    );
+  }
+
+  const grid = document.getElementById('productsGrid');
+  if (!watches.length) {
+    grid.innerHTML = `<div class="empty-state"><p>No products found</p></div>`;
+    return;
+  }
+
+  grid.innerHTML = watches.map((w, i) => {
+    const key = w.name;
+    const status = stockData[key] || 'In Stock';
+    const cls = status === 'In Stock' ? 'stock-in' : status === 'Out of Stock' ? 'stock-out' : 'stock-limited';
+    return `
+      <div class="product-row">
+        <img class="product-img" src="${escHtml(w.img)}" alt="${escHtml(w.name)}" loading="lazy" onerror="this.style.background='var(--dark-4)';this.src=''">
+        <div class="product-info">
+          <div class="product-name">${escHtml(w.name)}</div>
+          <div class="product-series">${escHtml(w.series || '')}</div>
+          <div class="product-price">${escHtml(w.display || '')}</div>
+        </div>
+        <button class="stock-toggle ${cls}" onclick="cycleStock('${escHtml(key)}')" id="stock-${i}">${escHtml(status)}</button>
+      </div>
+    `;
+  }).join('');
+}
+
+function cycleStock(key) {
+  const stockData = lsGet(LS.stock, {});
+  const current = stockData[key] || 'In Stock';
+  const cycle = { 'In Stock': 'Limited', 'Limited': 'Out of Stock', 'Out of Stock': 'In Stock' };
+  stockData[key] = cycle[current] || 'In Stock';
+  lsSet(LS.stock, stockData);
+  // Save to Firebase
+  if (typeof window.swSaveStock === 'function') {
+    window.swSaveStock(stockData);
+  }
+  renderProducts();
+}
+
+/* ============================================================
+   CUSTOMERS TAB
+   ============================================================ */
+function renderCustomers() {
+  const users = lsGet(LS.users);
+  const subs  = lsGet(LS.subscribers);
+  const orders = lsGet(LS.orders);
+  const search = (document.getElementById('customerSearch')?.value || '').toLowerCase();
+
+  // Build unified list
+  const map = new Map();
+
+  users.forEach(u => {
+    const email = u.email || u.id || '';
+    if (!map.has(email)) {
+      map.set(email, {
+        name: u.name || u.fullName || u.firstName || '—',
+        email,
+        phone: u.phone || u.mobile || '—',
+        type: 'Customer',
+        joined: u.createdAt || u.joinedAt || u.date || '',
+        orders: 0
+      });
+    }
+  });
+
+  subs.forEach(s => {
+    const email = s.email || '';
+    if (!map.has(email)) {
+      map.set(email, {
+        name: s.name || '—',
+        email,
+        phone: s.phone || '—',
+        type: 'Subscriber',
+        joined: s.date || s.subscribedAt || '',
+        orders: 0
+      });
+    } else {
+      const existing = map.get(email);
+      if (existing.type === 'Customer') existing.type = 'Customer + Sub';
+    }
+  });
+
+  // Count orders per email
+  orders.forEach(o => {
+    const email = o.email || '';
+    if (map.has(email)) map.get(email).orders++;
+  });
+
+  let list = [...map.values()];
+  if (search) {
+    list = list.filter(c =>
+      c.name.toLowerCase().includes(search) ||
+      c.email.toLowerCase().includes(search) ||
+      c.phone.toLowerCase().includes(search)
+    );
+  }
+
+  const tbody = document.getElementById('customersBody');
+  if (!list.length) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:40px;">No customers found</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = list.map(c => `
+    <tr>
+      <td style="font-weight:500;">${escHtml(c.name)}</td>
+      <td style="color:var(--text-muted);font-size:0.78rem;">${escHtml(c.email)}</td>
+      <td style="color:var(--text-muted);font-size:0.78rem;">${escHtml(c.phone)}</td>
+      <td style="text-align:center;">
+        <span style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--gold);">${c.orders}</span>
+      </td>
+      <td>
+        <span class="badge ${c.type.includes('Customer') ? 'badge-gold' : 'badge-blue'}">${escHtml(c.type)}</span>
+      </td>
+      <td style="color:var(--text-muted);font-size:0.75rem;">${fmtDate(c.joined)}</td>
+    </tr>
+  `).join('');
+}
+
+/* ============================================================
+   MESSAGES TAB
+   ============================================================ */
+function renderMessages() {
+  let messages = lsGet(LS.messages);
+  const readSet = new Set(lsGet(LS.msgRead, []));
+  const filter = document.getElementById('msgFilter')?.value || '';
+
+  if (filter === 'unread') messages = messages.filter(m => !readSet.has(m.id || m.timestamp));
+  if (filter === 'read')   messages = messages.filter(m =>  readSet.has(m.id || m.timestamp));
+
+  const container = document.getElementById('messagesBody');
+  if (!messages.length) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        <p>No messages found</p>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = [...messages].reverse().map(m => {
+    const msgId = m.id || m.timestamp || m.email;
+    const isRead = readSet.has(msgId);
+    return `
+      <div class="message-item ${isRead ? 'read' : 'unread'}" id="msg-${escHtml(String(msgId))}">
+        <div class="message-header">
+          <div class="message-from">
+            ${escHtml(m.name || m.from || '—')}
+            <span style="font-size:0.7rem;color:var(--text-muted);font-weight:300;margin-left:8px;">${escHtml(m.email || '')}</span>
+          </div>
+          <div class="message-date">${fmtDate(m.date || m.timestamp || m.createdAt)}</div>
+        </div>
+        ${m.subject ? `<div class="message-subject">${escHtml(m.subject)}</div>` : ''}
+        <div class="message-preview">${escHtml(m.message || m.body || m.text || '—')}</div>
+        ${m.phone ? `<div style="font-size:0.7rem;color:var(--text-muted);margin-top:4px;">📞 ${escHtml(m.phone)}</div>` : ''}
+        <div class="message-actions">
+          ${!isRead
+            ? `<button class="msg-btn mark-read" onclick="markMessage('${escHtml(String(msgId))}', true)">Mark as Read</button>`
+            : `<button class="msg-btn" onclick="markMessage('${escHtml(String(msgId))}', false)">Mark as Unread</button>`
+          }
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  updateUnreadBadge();
+}
+
+function markMessage(msgId, asRead) {
+  const readSet = new Set(lsGet(LS.msgRead, []));
+  if (asRead) readSet.add(msgId);
+  else readSet.delete(msgId);
+  lsSet(LS.msgRead, [...readSet]);
+  renderMessages();
+}
+
+function updateUnreadBadge() {
+  const messages = lsGet(LS.messages);
+  const readSet = new Set(lsGet(LS.msgRead, []));
+  const unread = messages.filter(m => !readSet.has(m.id || m.timestamp)).length;
+  const badge = document.getElementById('unreadBadge');
+  if (unread > 0) {
+    badge.textContent = unread;
+    badge.style.display = 'inline-block';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+/* ============================================================
+   EXPORT CSV
+   ============================================================ */
+function exportCSV(type) {
+  let rows = [], filename = '';
+
+  if (type === 'orders') {
+    const orders = lsGet(LS.orders);
+    filename = 'solowave-orders.csv';
+    rows = [['Order ID','Customer','Email','Product','Qty','Amount','Payment','Status','Date']];
+    orders.forEach(o => rows.push([
+      o.id || o.orderId || '',
+      o.customerName || o.name || o.customer || '',
+      o.email || '',
+      o.productName || o.product || o.watchName || '',
+      o.qty || o.quantity || 1,
+      o.total || o.amount || o.price || 0,
+      o.payment || o.paymentMethod || '',
+      o.status || '',
+      o.date || o.createdAt || o.timestamp || ''
+    ]));
+  } else if (type === 'products') {
+    const stockData = lsGet(LS.stock, {});
+    const watches = (typeof WATCHES_DATA !== 'undefined') ? WATCHES_DATA : [];
+    filename = 'solowave-products.csv';
+    rows = [['Name','Series','Price','Material','Movement','Diameter','Stock Status']];
+    watches.forEach(w => rows.push([
+      w.name, w.series || '', w.display || '', w.mat || '', w.mov || '', w.diam || '',
+      stockData[w.name] || 'In Stock'
+    ]));
+  } else if (type === 'customers') {
+    const users = lsGet(LS.users);
+    const subs  = lsGet(LS.subscribers);
+    const orders = lsGet(LS.orders);
+    filename = 'solowave-customers.csv';
+    rows = [['Name','Email','Phone','Orders','Type','Joined']];
+    const map = new Map();
+    users.forEach(u => {
+      const email = u.email || '';
+      map.set(email, { name: u.name || '', email, phone: u.phone || '', type: 'Customer', joined: u.createdAt || '', orders: 0 });
+    });
+    subs.forEach(s => {
+      const email = s.email || '';
+      if (!map.has(email)) map.set(email, { name: s.name || '', email, phone: '', type: 'Subscriber', joined: s.date || '', orders: 0 });
+    });
+    orders.forEach(o => { if (map.has(o.email || '')) map.get(o.email).orders++; });
+    map.forEach(c => rows.push([c.name, c.email, c.phone, c.orders, c.type, c.joined]));
+  } else if (type === 'messages') {
+    const messages = lsGet(LS.messages);
+    const readSet = new Set(lsGet(LS.msgRead, []));
+    filename = 'solowave-messages.csv';
+    rows = [['Name','Email','Phone','Subject','Message','Date','Status']];
+    messages.forEach(m => {
+      const msgId = m.id || m.timestamp || m.email;
+      rows.push([
+        m.name || '', m.email || '', m.phone || '',
+        m.subject || '', m.message || m.body || '',
+        m.date || m.timestamp || '',
+        readSet.has(msgId) ? 'Read' : 'Unread'
+      ]);
+    });
+  }
+
+  if (!rows.length) return;
+  const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+(function boot() {
+  // Apply theme immediately to avoid flash
+  const t = localStorage.getItem(LS.theme);
+  if (t === 'light') document.body.classList.add('light-mode');
+
+  // Check if already authenticated
+  if (lsGet(LS.auth) === true) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminApp').classList.add('visible');
+    initApp();
+  } else {
+    document.getElementById('adminPass').focus();
+  }
+})();
+</script>
+<script type="module" src="db.js"></script>
+<script src="admin-firebase.js"></script>
+</body>
+</html>

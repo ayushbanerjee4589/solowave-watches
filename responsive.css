@@ -1,0 +1,605 @@
+﻿/* ============================================================
+   SOLOWAVE — RESPONSIVE.CSS  (Amazon-style mobile alignment)
+   Clean, single-pass, mobile-first. No duplicates.
+   ============================================================ */
+
+/* ===================== BASE (all screens) ===================== */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body { overflow-x: hidden; -webkit-font-smoothing: antialiased; width: 100%; }
+img, video { max-width: 100%; height: auto; display: block; }
+* { -webkit-tap-highlight-color: transparent; }
+
+/* Full-width sections — no horizontal overflow */
+.hero, .marquee-section, .collection, .about,
+.categories, .product, .testimonials, .newsletter, .footer {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Container — fluid padding like Amazon */
+.container, .nav-container {
+  width: 100%;
+  padding-left:  clamp(14px, 4vw, 40px);
+  padding-right: clamp(14px, 4vw, 40px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* iOS safe area */
+.navbar { padding-left: max(14px, env(safe-area-inset-left)); padding-right: max(14px, env(safe-area-inset-right)); }
+.cart-drawer { padding-bottom: env(safe-area-inset-bottom); }
+
+/* Fluid section spacing */
+.collection, .categories, .testimonials, .newsletter {
+  padding-top: clamp(48px, 8vw, 120px);
+  padding-bottom: clamp(48px, 8vw, 120px);
+}
+.about, .product {
+  padding-top: clamp(48px, 10vw, 140px);
+  padding-bottom: clamp(48px, 10vw, 140px);
+}
+
+/* ===================== DESKTOP ≥ 1025px ===================== */
+@media (min-width: 1025px) {
+  .container, .nav-container { max-width: 1280px; }
+  .collection-grid { grid-template-columns: repeat(3, 1fr); }
+  .categories-grid { grid-template-columns: repeat(4, 1fr); }
+  .about-grid { grid-template-columns: 1fr 1fr; gap: 80px; }
+  .product-grid { grid-template-columns: 1fr 1fr; gap: 80px; }
+  .footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr; gap: 60px; }
+  .hero-inner { padding: 120px 40px 90px; }
+  .hero-watch-wrap { margin-bottom: 52px; }
+  /* Watch size desktop */
+  .hero-watch .watch-face  { width: 300px; height: 360px; }
+  .hero-watch .watch-case  { width: 260px; height: 300px; }
+  .hero-watch .watch-bezel { width: 230px; height: 268px; }
+  .hero-watch .watch-dial  { width: 196px; height: 232px; }
+  .hero-watch .hour-hand   { height: 60px; }
+  .hero-watch .minute-hand { height: 78px; }
+  .hero-watch .second-hand { height: 86px; }
+  .hero-watch-ring   { width: 380px; height: 380px; }
+  .hero-watch-ring-2 { width: 460px; height: 460px; }
+  .hero-watch-glow-orb { width: 320px; height: 320px; }
+}
+
+/* ===================== TABLET 769px – 1024px ===================== */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .container, .nav-container { max-width: 100%; }
+  .nav-links { gap: 20px; }
+  .nav-links a { font-size: 0.62rem; }
+  .collection-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .categories-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .about-grid { grid-template-columns: 1fr; gap: 40px; }
+  .about-left { text-align: center; }
+  .about-stat-row { justify-content: center; }
+  .product-grid { grid-template-columns: 1fr; gap: 40px; }
+  .product-visual { order: -1; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 36px; }
+  .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+  /* Hero */
+  .hero-inner { padding: 100px 24px 70px; }
+  .hero-watch-wrap { margin-bottom: 40px; }
+  .hero-watch .watch-face  { width: 240px; height: 290px; }
+  .hero-watch .watch-case  { width: 208px; height: 242px; }
+  .hero-watch .watch-bezel { width: 184px; height: 214px; }
+  .hero-watch .watch-dial  { width: 158px; height: 184px; }
+  .hero-watch .hour-hand   { height: 48px; }
+  .hero-watch .minute-hand { height: 62px; }
+  .hero-watch .second-hand { height: 68px; }
+  .hero-watch-ring   { width: 300px; height: 300px; }
+  .hero-watch-ring-2 { width: 370px; height: 370px; }
+  .hero-watch-glow-orb { width: 250px; height: 250px; }
+  .hero-title { font-size: clamp(2.8rem, 6vw, 4.5rem) !important; }
+}
+
+/* ===================== MOBILE ≤ 768px ===================== */
+@media (max-width: 768px) {
+
+  /* --- Navbar --- */
+  .nav-links { display: none; }
+  .nav-toggle { display: flex; }
+  .nav-logo { font-size: 1.15rem; letter-spacing: 0.18em; }
+  .navbar { padding-top: 13px; padding-bottom: 13px; }
+
+  /* --- Hero — watch top, text bottom, full-width centered --- */
+  .hero {
+    overflow: visible;
+    min-height: 100svh;
+    min-height: 100vh;
+  }
+  .hero-inner {
+    padding: 80px 16px 52px;
+    width: 100%;
+    overflow: visible;
+  }
+  .hero-watch-wrap { margin-bottom: 24px; overflow: visible; }
+  .hero-watch {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    overflow: visible !important;
+  }
+  .hero-watch .watch-face,
+  .hero-watch .watch-case,
+  .hero-watch .watch-bezel,
+  .hero-watch .watch-dial { overflow: visible !important; }
+  .hero-watch .hand {
+    position: absolute !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    bottom: 50% !important;
+    left: 50% !important;
+  }
+  .hero-watch .hour-hand   { margin-left: -1.5px !important; }
+  .hero-watch .minute-hand { margin-left: -1px !important; }
+  .hero-watch .second-hand { margin-left: -0.5px !important; }
+  .hero-watch .center-dot  { position: absolute !important; display: block !important; z-index: 10 !important; }
+  /* Watch size mobile */
+  .hero-watch .watch-face  { width: 190px; height: 230px; }
+  .hero-watch .watch-case  { width: 165px; height: 192px; }
+  .hero-watch .watch-bezel { width: 146px; height: 170px; }
+  .hero-watch .watch-dial  { width: 125px; height: 146px; }
+  .hero-watch .hour-hand   { height: 38px; }
+  .hero-watch .minute-hand { height: 50px; }
+  .hero-watch .second-hand { height: 54px; }
+  .hero-watch .watch-brand-text { font-size: 0.38rem; }
+  .hero-watch .watch-swiss-text { font-size: 0.22rem; }
+  .hero-watch .center-dot  { width: 6px; height: 6px; }
+  .hero-watch .watch-crown { width: 8px; height: 20px; right: -8px; }
+  .hero-watch .watch-lug   { width: 14px; height: 20px; }
+  .hero-watch .top-left    { top: 5px; left: 20px; }
+  .hero-watch .top-right   { top: 5px; right: 20px; }
+  .hero-watch .bottom-left { bottom: 5px; left: 20px; }
+  .hero-watch .bottom-right{ bottom: 5px; right: 20px; }
+  .hero-watch-ring   { width: 240px; height: 240px; }
+  .hero-watch-ring-2 { width: 296px; height: 296px; }
+  .hero-watch-glow-orb { width: 200px; height: 200px; }
+  /* Hero text */
+  .hero-title    { font-size: clamp(2.4rem, 9vw, 3.6rem) !important; line-height: 1.05; }
+  .hero-subtitle { font-size: 0.86rem; }
+  .hero-scroll-indicator { display: none; }
+
+  /* --- Marquee --- */
+  .marquee-track { gap: 20px; }
+  .marquee-track span { font-size: 0.56rem; }
+
+  /* --- Section headers --- */
+  .section-header { margin-bottom: 36px; }
+  .section-title  { font-size: clamp(1.5rem, 5vw, 2rem); }
+  .section-subtitle { font-size: 0.76rem; }
+
+  /* --- Collection grid: 2 columns --- */
+  .collection-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .watch-card { padding: 14px 10px; border-radius: 12px; }
+  .card-watch-visual { height: 130px !important; }
+  .watch-img { width: 100px; height: 100px; }
+  .card-name { font-size: 0.88rem; line-height: 1.3; }
+  .card-price { font-size: 0.82rem; margin-bottom: 10px; }
+  .card-collection { font-size: 0.5rem; }
+  .card-badge { font-size: 0.45rem; padding: 2px 6px; top: 8px; right: 8px; }
+  /* Card buttons */
+  .card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .btn-quickview { width: 100%; padding: 7px 4px; font-size: 0.52rem; }
+  .btn-cart      { width: 100%; padding: 7px 4px; font-size: 0.52rem; }
+  .btn-buynow    { width: 100%; padding: 8px 4px; font-size: 0.54rem; }
+
+  /* --- About --- */
+  .about-grid { grid-template-columns: 1fr; gap: 36px; }
+  .about-left { text-align: center; }
+  .about-quote { font-size: clamp(1.2rem, 4vw, 1.6rem); }
+  .about-stat-row { gap: 16px; flex-wrap: wrap; justify-content: center; }
+  .stat-num { font-size: 1.8rem; }
+  .about-text { font-size: 0.8rem; }
+  .about-bg-text { font-size: clamp(3.5rem, 14vw, 7rem); }
+
+  /* --- Categories: 2 columns --- */
+  .categories-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .category-card { padding: 20px 14px; border-radius: 12px; }
+  .category-icon { font-size: 1.8rem; margin-bottom: 12px; }
+  .category-name { font-size: 1rem; }
+  .category-desc { font-size: 0.7rem; }
+  .category-watches { height: 130px; margin-bottom: 16px; }
+  .cat-watch { width: 80px; height: 80px; }
+  .cat-w2 { width: 96px; height: 96px; }
+  .cat-w1 { transform: translate(-50%, -50%) translateX(-38px) rotate(-12deg) scale(0.82); }
+  .cat-w3 { transform: translate(-50%, -50%) translateX(38px) rotate(12deg) scale(0.82); }
+
+  /* --- Product spotlight --- */
+  .product-grid { grid-template-columns: 1fr; gap: 36px; }
+  .product-visual { order: -1; }
+  .product-title { font-size: clamp(1.6rem, 5vw, 2.2rem); }
+  .product-price { font-size: 1.3rem; }
+  .product-desc  { font-size: 0.8rem; }
+  .spec-label { font-size: 0.6rem; }
+  .spec-value { font-size: 0.72rem; }
+  .product-actions { flex-direction: column; gap: 8px; }
+  .product-main-img { height: 260px; }
+  .product-thumb { width: 54px; height: 54px; }
+  .product-thumb-row { gap: 6px; }
+
+  /* --- Testimonials --- */
+  .testimonials-slider { min-height: 300px; }
+  .testimonial-card { padding: 20px 16px; }
+  .testimonial-text { font-size: 0.84rem; }
+
+  /* --- Newsletter --- */
+  .newsletter-title { font-size: clamp(1.4rem, 5vw, 2rem); }
+  .newsletter-sub { font-size: 0.78rem; }
+  .form-group { flex-direction: column; }
+  .newsletter-input { border-radius: 6px 6px 0 0; padding: 13px 16px; }
+  .btn-newsletter { border-radius: 0 0 6px 6px; padding: 13px; width: 100%; }
+
+  /* --- Footer --- */
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 20px; }
+  .footer-logo { font-size: 1.3rem; }
+  .footer-bottom { flex-direction: column; gap: 10px; text-align: center; }
+  .footer-bottom-links { flex-wrap: wrap; justify-content: center; gap: 8px; }
+
+  /* --- Cart drawer --- */
+  .cart-drawer { width: 100vw; }
+  .cart-header { padding: 16px 14px; }
+  .cart-item { padding: 12px 14px; }
+  .cart-footer { padding: 14px; }
+
+  /* --- Modals --- */
+  .modal { flex-direction: column; padding: 20px 16px; gap: 16px; }
+  .modal-mini-watch { width: 90px; height: 110px; }
+  .modal-name { font-size: 1.2rem; }
+  .checkout-modal-inner { padding: 28px 18px; }
+  .checkout-title { font-size: 1.3rem; }
+
+  /* --- Toast --- */
+  .cart-toast { bottom: 14px; right: 14px; left: 14px; text-align: center; font-size: 0.7rem; }
+}
+
+/* ===================== SMALL MOBILE ≤ 480px ===================== */
+@media (max-width: 480px) {
+  html { font-size: 15px; }
+
+  /* Navbar */
+  .nav-logo { font-size: 1.05rem; letter-spacing: 0.14em; }
+
+  /* Hero */
+  .hero-inner { padding: 72px 14px 44px; }
+  .hero-watch-wrap { margin-bottom: 18px; }
+  .hero-watch .watch-face  { width: 160px; height: 194px; }
+  .hero-watch .watch-case  { width: 139px; height: 162px; }
+  .hero-watch .watch-bezel { width: 123px; height: 143px; }
+  .hero-watch .watch-dial  { width: 105px; height: 122px; }
+  .hero-watch .hour-hand   { height: 32px; }
+  .hero-watch .minute-hand { height: 42px; }
+  .hero-watch .second-hand { height: 46px; }
+  .hero-watch .subdial { width: 22px; height: 22px; }
+  .hero-watch .subdial-hand { height: 7px; }
+  .hero-watch-ring   { width: 198px; height: 198px; }
+  .hero-watch-ring-2 { width: 244px; height: 244px; }
+  .hero-watch-glow-orb { width: 168px; height: 168px; }
+  .hero-title    { font-size: clamp(2rem, 10vw, 2.8rem) !important; }
+  .hero-subtitle { font-size: 0.8rem; max-width: 240px; }
+  .hero-content .btn-primary { width: 100%; max-width: 240px; justify-content: center; }
+
+  /* Collection — single column on small phones */
+  .collection-grid { grid-template-columns: 1fr; gap: 10px; }
+  .watch-card { padding: 16px 12px; }
+  .card-watch-visual { height: 160px !important; }
+  .watch-img { width: 130px; height: 130px; }
+  .card-name { font-size: 1rem; }
+  .card-price { font-size: 0.95rem; }
+
+  /* Categories — single column */
+  .categories-grid { grid-template-columns: 1fr; gap: 8px; }
+  .category-card { padding: 20px 16px; }
+
+  /* About */
+  .about-stat-row { justify-content: space-around; gap: 10px; }
+  .stat-num { font-size: 1.6rem; }
+
+  /* Product */
+  .product-main-img { height: 220px; }
+  .product-thumb { width: 46px; height: 46px; }
+
+  /* Testimonials */
+  .testimonials-slider { min-height: 360px; }
+
+  /* Footer — single column */
+  .footer-grid { grid-template-columns: 1fr; gap: 20px; }
+  .footer-brand { text-align: center; }
+  .footer-social { justify-content: center; }
+
+  /* Checkout modal */
+  .checkout-modal-inner { padding: 24px 12px; }
+}
+
+/* ===================== TINY ≤ 360px ===================== */
+@media (max-width: 360px) {
+  html { font-size: 14px; }
+  .hero-inner { padding: 64px 12px 36px; }
+  .hero-watch .watch-face  { width: 138px; height: 167px; }
+  .hero-watch .watch-case  { width: 120px; height: 140px; }
+  .hero-watch .watch-bezel { width: 106px; height: 124px; }
+  .hero-watch .watch-dial  { width: 90px;  height: 106px; }
+  .hero-watch .hour-hand   { height: 27px; }
+  .hero-watch .minute-hand { height: 36px; }
+  .hero-watch .second-hand { height: 39px; }
+  .hero-watch-ring   { width: 170px; height: 170px; }
+  .hero-watch-ring-2 { width: 210px; height: 210px; }
+  .hero-title { font-size: 1.9rem !important; }
+  .section-title { font-size: 1.4rem; }
+  .about-stat-row { flex-direction: column; align-items: center; gap: 14px; }
+}
+
+/* ===================== LARGE DESKTOP ≥ 1440px ===================== */
+@media (min-width: 1440px) {
+  .container, .nav-container { max-width: 1360px; }
+}
+
+/* ===================== TV ≥ 1920px ===================== */
+@media (min-width: 1920px) {
+  html { font-size: 18px; }
+  .container, .nav-container { max-width: 1600px; padding: 0 80px; }
+  .collection-grid { grid-template-columns: repeat(4, 1fr); gap: 32px; }
+  .categories-grid { grid-template-columns: repeat(4, 1fr); gap: 32px; }
+  .hero-title { font-size: 9rem; }
+  .section-title { font-size: 4rem; }
+  .watch-img { width: 190px; height: 190px; }
+  .card-watch-visual { height: 210px !important; }
+}
+
+/* ===================== TOUCH DEVICES ===================== */
+@media (hover: none) and (pointer: coarse) {
+  .btn-primary, .btn-outline, .btn-cart, .btn-quickview,
+  .btn-buynow, .btn-add-cart, .btn-buy-now, .btn-place-order,
+  .btn-checkout, .btn-cart-card, .btn-buynow-card,
+  .t-btn, .qty-btn { min-height: 44px; }
+  .cart-close-btn, .social-link { width: 44px; height: 44px; }
+  .watch-card:hover, .category-card:hover,
+  .related-card:hover { transform: none !important; }
+  .watch-card:hover .watch-img { transform: none !important; }
+  .btn-primary:hover, .btn-outline:hover { transform: none !important; }
+  .zoom-lens, .zoom-result, .gallery-zoom-hint { display: none !important; }
+}
+
+/* ===================== LANDSCAPE MOBILE ===================== */
+@media (max-height: 500px) and (orientation: landscape) {
+  .hero { min-height: 100svh; }
+  .hero-inner { padding-top: 60px; padding-bottom: 24px; }
+  .hero-title { font-size: 2.4rem !important; }
+  .hero-scroll-indicator { display: none; }
+  .navbar { padding-top: 8px; padding-bottom: 8px; }
+}
+
+/* ===================== PRODUCT PAGE ===================== */
+@media (max-width: 1024px) {
+  .product-container { grid-template-columns: 1fr; gap: 36px; padding: 36px 24px; }
+  .gallery-section { position: static; }
+  .related-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .related-section { padding: 36px 24px 0; }
+}
+@media (max-width: 768px) {
+  .product-container { padding: 20px 14px; }
+  .related-section { padding: 24px 14px 0; }
+  .gallery-main-img { height: 300px; }
+  .gallery-thumb { height: 64px; }
+  .gallery-thumbs { gap: 6px; }
+  .view-tabs { flex-wrap: wrap; gap: 5px; }
+  .view-tab { padding: 7px 10px; font-size: 0.58rem; flex: 1; justify-content: center; min-width: 0; }
+  .view-360-canvas { height: 300px; }
+  .video-player { height: 300px; }
+  .info-name { font-size: clamp(1.5rem, 5vw, 2rem); }
+  .info-price { font-size: 1.3rem; }
+  .info-actions { flex-direction: column; }
+  .trust-badges { grid-template-columns: 1fr 1fr; }
+  .zoom-result { display: none !important; }
+}
+@media (max-width: 480px) {
+  .product-container { padding: 14px 10px; }
+  .related-section { padding: 18px 10px 0; }
+  .related-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .gallery-main-img { height: 240px; }
+  .gallery-thumb { height: 52px; }
+  .view-360-canvas { height: 240px; }
+  .video-player { height: 240px; }
+  .ar-features { grid-template-columns: 1fr; }
+  .trust-badges { grid-template-columns: 1fr; }
+  .info-specs .spec-row { flex-direction: column; gap: 2px; padding: 8px 0; }
+}
+@media (max-width: 360px) {
+  .related-grid { grid-template-columns: 1fr; }
+  .gallery-main-img { height: 200px; }
+}
+
+/* ===================== CHECKOUT PAGE ===================== */
+@media (max-width: 1024px) {
+  .co-grid { grid-template-columns: 1fr; }
+  .order-summary { position: static; }
+  .co-main { padding: 24px 18px; }
+}
+@media (max-width: 768px) {
+  .co-nav { padding: 12px 14px; }
+  .co-nav-steps { display: none; }
+  .co-main { padding: 14px 12px; }
+  .co-section { padding: 16px 12px; margin-bottom: 12px; }
+  .form-row { grid-template-columns: 1fr; gap: 0; }
+  .pay-option { padding: 10px 10px; gap: 8px; }
+  .pay-badges { display: none; }
+  .card-preview { padding: 14px; min-height: 110px; }
+  .card-preview-number { font-size: 0.84rem; letter-spacing: 0.08em; }
+  .btn-place-order { padding: 14px 16px; font-size: 0.7rem; }
+  .co-trust-row { font-size: 0.56rem; gap: 6px; }
+  .security-badges { flex-direction: column; }
+  .upi-apps { gap: 8px; }
+  .upi-app-icon { width: 42px; height: 42px; }
+  .order-item-img { width: 48px; height: 48px; }
+  .order-item-name { font-size: 0.76rem; }
+}
+@media (max-width: 480px) {
+  .co-nav { padding: 10px 10px; }
+  .co-main { padding: 10px 8px; }
+  .co-section { padding: 12px 10px; }
+  .pay-name { font-size: 0.78rem; }
+  .pay-desc { font-size: 0.58rem; }
+}
+
+/* ===================== REDUCED MOTION ===================== */
+@media (prefers-reduced-motion: reduce) {
+  *:not(.marquee-wrapper), *:not(.marquee-wrapper)::before, *:not(.marquee-wrapper)::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .hero-watch, .scroll-line { animation: none !important; }
+  .loader-logo { animation: none; opacity: 1; transform: none; }
+  .loader-line { width: 200px; }
+  .loader-sub { opacity: 1; }
+}
+
+
+/* ============================================================
+   SCREEN-FIT LOCK — prevents overflow, forces phone width
+   ============================================================ */
+
+/* Force everything to fit within screen width */
+html {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Every section must stay within screen */
+* {
+  max-width: 100%;
+}
+
+/* Prevent any element from causing horizontal scroll */
+section, div, header, footer, nav, main, article {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* Images never overflow */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Fix common overflow culprits */
+.hero-bg,
+.about-bg-text,
+.newsletter-glow,
+.hero-glow {
+  max-width: 100vw;
+  overflow: hidden;
+}
+
+/* Marquee — clip to screen */
+.marquee-section {
+  overflow: hidden;
+  width: 100%;
+}
+
+/* Container never wider than screen */
+.container,
+.nav-container {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* Watch rings — don't overflow on mobile */
+@media (max-width: 768px) {
+  .hero-watch-ring,
+  .hero-watch-ring-2,
+  .hero-watch-glow-orb {
+    max-width: 100vw;
+    max-height: 100vw;
+  }
+
+  /* Hero section fits screen exactly */
+  .hero {
+    width: 100vw;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  .hero-inner {
+    width: 100%;
+    max-width: 100vw;
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  /* Cards fit in grid without overflow */
+  .watch-card {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .card-name {
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  /* Buttons full width, no overflow */
+  .btn-primary,
+  .btn-outline {
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Footer fits screen */
+  .footer {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* Modal fits screen */
+  .modal {
+    width: calc(100vw - 32px);
+    max-width: calc(100vw - 32px);
+  }
+
+  /* Cart drawer full width */
+  .cart-drawer {
+    width: 100vw;
+    max-width: 100vw;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Tighter fit on small phones */
+  .hero-inner {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .container,
+  .nav-container {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  /* Watch rings smaller to prevent overflow */
+  .hero-watch-ring   { width: min(198px, 55vw); height: min(198px, 55vw); }
+  .hero-watch-ring-2 { width: min(244px, 68vw); height: min(244px, 68vw); }
+
+  /* Text never overflows */
+  h1, h2, h3, h4, p, span, div {
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+}

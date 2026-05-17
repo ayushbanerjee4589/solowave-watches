@@ -1,0 +1,1143 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Solowave Watches  Time Redefined</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Montserrat:wght@200;300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="responsive.css" />
+  <link rel="stylesheet" href="luxury-ui.css" />
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="auth.js"></script>
+  <script type="module" src="db.js"></script>
+</head>
+<body>
+
+  <!-- LOADER -->
+  <div id="loader" class="loader">
+    <div class="ldr-logo">SOLOWAVE</div>
+    <div class="ldr-line"></div>
+    <div class="ldr-sub">WATCHES · EST. 2024</div>
+  </div>
+
+  <!-- AFFILIATE NOTICE BAR -->
+  <div class="affiliate-bar" id="affiliateBar">
+    <span>🛒 Some links on this site are Amazon affiliate links. We may earn a commission at no extra cost to you.</span>
+    <a href="affiliate-disclosure.html">Learn more</a>
+    <button onclick="document.getElementById('affiliateBar').style.display='none';localStorage.setItem('affBarClosed','1')" aria-label="Close">✕</button>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="#" class="nav-logo">SOLOWAVE</a>
+      <ul class="nav-links">
+        <li><a href="#collection">Collection</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#categories">Categories</a></li>
+        <li><a href="#product">Flagship</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="contact.html">Contact Us</a></li>
+      </ul>
+      <div class="nav-actions">
+        <!-- User / Wishlist / Orders — desktop only, hidden on mobile -->
+        <div class="nav-user-wrap" id="navUserWrap">
+          <a href="login.html" class="nav-user-btn" id="navLoginBtn" title="Sign In">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </a>
+          <a href="wishlist.html" class="nav-user-btn" id="navWishlistBtn" title="Wishlist">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            <span class="nav-wl-count" id="navWlCount"></span>
+          </a>
+          <a href="orders.html" class="nav-user-btn" id="navOrdersBtn" title="My Orders">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+          </a>
+        </div>
+        <!-- Search — desktop only -->
+        <button class="nav-search-btn nav-desktop-only" id="navSearchBtn" aria-label="Search watches" title="Search (Ctrl+K)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+        <!-- Day / Night Toggle — desktop only -->
+        <button class="theme-toggle nav-desktop-only" id="themeToggle" aria-label="Toggle day/night mode" title="Toggle Day / Night">
+          <span class="theme-toggle-track">
+            <span class="theme-toggle-thumb">
+              <span class="theme-icon theme-icon-moon">🌙</span>
+              <span class="theme-icon theme-icon-sun">☀️</span>
+            </span>
+          </span>
+        </button>
+        <!-- Cart — always visible -->
+        <button class="cart-btn" id="cartBtn" onclick="openCart()">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          <span class="cart-count" id="cartCount">0</span>
+        </button>
+        <button class="nav-toggle" id="navToggle" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MOBILE MENU DRAWER -->
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-header">
+      <span class="mobile-menu-logo">SOLOWAVE</span>
+      <button class="mobile-menu-close" id="mobileMenuClose" aria-label="Close menu">✕</button>
+    </div>
+    <nav class="mobile-menu-links">
+      <a href="#collection"  onclick="closeMobileMenu()">Collection</a>
+      <a href="#about"       onclick="closeMobileMenu()">About</a>
+      <a href="#categories"  onclick="closeMobileMenu()">Categories</a>
+      <a href="#product"     onclick="closeMobileMenu()">Flagship</a>
+      <a href="contact.html" onclick="closeMobileMenu()">Contact</a>
+    </nav>
+    <div class="mobile-menu-divider"></div>
+    <div class="mobile-menu-actions">
+      <a href="login.html"    class="mobile-menu-action-btn" onclick="closeMobileMenu()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        My Account
+      </a>
+      <a href="wishlist.html" class="mobile-menu-action-btn" onclick="closeMobileMenu()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        Wishlist
+      </a>
+      <a href="orders.html"   class="mobile-menu-action-btn" onclick="closeMobileMenu()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+        My Orders
+      </a>
+      <button class="mobile-menu-action-btn" onclick="document.getElementById('gsearchOverlay').classList.add('open'); closeMobileMenu();">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Search
+      </button>
+    </div>
+    <div class="mobile-menu-divider"></div>
+    <!-- Theme toggle inside mobile menu -->
+    <div class="mobile-menu-theme">
+      <span>Theme</span>
+      <button class="theme-toggle" id="themeToggleMobile" aria-label="Toggle theme">
+        <span class="theme-toggle-track">
+          <span class="theme-toggle-thumb">
+            <span class="theme-icon theme-icon-moon">🌙</span>
+            <span class="theme-icon theme-icon-sun">☀️</span>
+          </span>
+        </span>
+      </button>
+    </div>
+  </div>
+  <div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="closeMobileMenu()"></div>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero-bg">
+      <div class="hero-glow"></div>
+      <div class="hero-particles" id="particles"></div>
+    </div>
+
+    <!-- HERO INNER — stacked: watch on top, text below -->
+    <div class="hero-inner">
+
+      <!-- WATCH — always on top -->
+      <div class="hero-watch-wrap">
+        <div class="hero-watch-ring"></div>
+        <div class="hero-watch-ring hero-watch-ring-2"></div>
+        <div class="hero-watch-glow-orb"></div>
+        <div class="hero-watch" id="heroWatchEl">
+          <div class="watch-face" id="watchFace">
+            <div class="watch-case">
+              <div class="watch-bezel">
+                <div class="watch-dial">
+                  <div class="watch-brand-text">SOLOWAVE</div>
+                  <div class="watch-swiss-text">SWISS MADE</div>
+                  <div class="tick-marks" id="tickMarks"></div>
+                  <div class="hand hour-hand" id="hourHand"></div>
+                  <div class="hand minute-hand" id="minuteHand"></div>
+                  <div class="hand second-hand" id="secondHand"></div>
+                  <div class="center-dot"></div>
+                  <div class="subdial">
+                    <div class="subdial-hand" id="subdialHand"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="watch-crown"></div>
+            <div class="watch-lug top-left"></div>
+            <div class="watch-lug top-right"></div>
+            <div class="watch-lug bottom-left"></div>
+            <div class="watch-lug bottom-right"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TEXT — below watch -->
+      <div class="hero-content">
+        <div class="hero-eyebrow reveal">Est. 2024 &nbsp;|&nbsp; Geneva, Switzerland</div>
+        <h1 class="hero-title">
+          <span class="hero-title-line reveal">Time</span>
+          <span class="hero-title-line reveal italic">Redefined</span>
+        </h1>
+        <p class="hero-subtitle reveal">Crafted for the extraordinary.</p>
+        <a href="#collection" class="btn-primary reveal">Explore Collection</a>
+      </div>
+
+    </div><!-- /hero-inner -->
+
+    <div class="hero-scroll-indicator">
+      <div class="scroll-line"></div>
+      <span>Scroll</span>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-section">
+    <div class="marquee-wrapper">
+      <!-- Track 1 -->
+      <div class="marquee-track" aria-hidden="false">
+        <span>Swiss Precision</span><span class="dot">✦</span>
+        <span>18k Gold</span><span class="dot">✦</span>
+        <span>Sapphire Crystal</span><span class="dot">✦</span>
+        <span>Handcrafted</span><span class="dot">✦</span>
+        <span>Limited Edition</span><span class="dot">✦</span>
+        <span>Swiss Movement</span><span class="dot">✦</span>
+        <span>Tourbillon</span><span class="dot">✦</span>
+        <span>Geneva Seal</span><span class="dot">✦</span>
+      </div>
+      <!-- Track 2 — exact duplicate for seamless loop -->
+      <div class="marquee-track" aria-hidden="true">
+        <span>Swiss Precision</span><span class="dot">✦</span>
+        <span>18k Gold</span><span class="dot">✦</span>
+        <span>Sapphire Crystal</span><span class="dot">✦</span>
+        <span>Handcrafted</span><span class="dot">✦</span>
+        <span>Limited Edition</span><span class="dot">✦</span>
+        <span>Swiss Movement</span><span class="dot">✦</span>
+        <span>Tourbillon</span><span class="dot">✦</span>
+        <span>Geneva Seal</span><span class="dot">✦</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURED COLLECTION -->
+  <section class="collection" id="collection">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-eyebrow">Our Masterpieces</div>
+        <h2 class="section-title">Featured Collection</h2>
+        <p class="section-subtitle">Each timepiece is a testament to uncompromising excellence</p>
+      </div>
+
+      <!-- ── SMART SEARCH & FILTER BAR ── -->
+      <div class="search-filter-bar reveal" id="searchFilterBar">
+
+        <!-- Search input -->
+        <div class="sf-search-wrap">
+          <svg class="sf-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="sfInput" class="sf-input" placeholder="Search watches, series, features…" autocomplete="off" spellcheck="false" />
+          <button class="sf-clear" id="sfClear" aria-label="Clear search">✕</button>
+        </div>
+
+        <!-- Filter pills -->
+        <div class="sf-filters" id="sfFilters">
+          <button class="sf-pill active" data-filter="all">All</button>
+          <button class="sf-pill" data-filter="luxury">Luxury</button>
+          <button class="sf-pill" data-filter="sport">Sport</button>
+          <button class="sf-pill" data-filter="limited">Limited</button>
+          <button class="sf-pill" data-filter="under5l">Under ₹5L</button>
+          <button class="sf-pill" data-filter="5to20l">₹5L – ₹20L</button>
+          <button class="sf-pill" data-filter="above20l">Above ₹20L</button>
+        </div>
+
+        <!-- Sort dropdown -->
+        <div class="sf-sort-wrap">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="9" y1="18" x2="15" y2="18"/></svg>
+          <select class="sf-sort" id="sfSort">
+            <option value="default">Sort: Default</option>
+            <option value="price-asc">Price: Low → High</option>
+            <option value="price-desc">Price: High → Low</option>
+            <option value="name-asc">Name: A → Z</option>
+            <option value="name-desc">Name: Z → A</option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- Results count + active tags -->
+      <div class="sf-meta" id="sfMeta">
+        <span class="sf-count" id="sfCount"></span>
+        <div class="sf-active-tags" id="sfActiveTags"></div>
+      </div>
+
+      <!-- No results state -->
+      <div class="sf-empty" id="sfEmpty" style="display:none;">
+        <div class="sf-empty-icon">🔍</div>
+        <div class="sf-empty-title">No watches found</div>
+        <div class="sf-empty-sub">Try a different search or clear the filters</div>
+        <button class="sf-empty-reset" onclick="sfReset()">Clear All Filters</button>
+      </div>
+
+      <div class="collection-grid" id="collectionGrid">
+        <div class="watch-card reveal" data-name="Solowave Noir I" data-price="Rs10,37,500" data-desc="Midnight black dial with rose gold indices. Swiss automatic movement. 42mm case.">
+          <div class="card-glow"></div>
+          <div class="card-badge">New</div>
+          <div class="card-watch-visual">
+            <img src="https://images.unsplash.com/photo-1547996160-81dfa63595aa?w=400&q=80&fit=crop" alt="Solowave Noir I" class="watch-img" />
+          </div>
+          <div class="card-info">
+            <div class="card-collection">Noir Series</div>
+            <h3 class="card-name">Solowave Noir I</h3>
+            <div class="card-price">Rs10,37,500</div>
+            <div class="card-actions">
+              <button class="btn-quickview btn-qv-card">Quick View</button>
+              <button class="btn-cart btn-cart-card">+ Cart</button>
+              <button class="btn-buynow btn-buynow-card">Buy Now</button>
+            </div>
+          </div>
+        </div>
+        <div class="watch-card reveal" data-name="Solowave Aurum" data-price="Rs15,68,700" data-desc="18k gold case with champagne dial. Tourbillon movement. 40mm case.">
+          <div class="card-glow"></div>
+          <div class="card-badge gold-badge">Bestseller</div>
+          <div class="card-watch-visual">
+            <img src="https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=400&q=80&fit=crop" alt="Solowave Aurum" class="watch-img" />
+          </div>
+          <div class="card-info">
+            <div class="card-collection">Aurum Series</div>
+            <h3 class="card-name">Solowave Aurum</h3>
+            <div class="card-price">Rs15,68,700</div>
+            <div class="card-actions">
+              <button class="btn-quickview btn-qv-card">Quick View</button>
+              <button class="btn-cart btn-cart-card">+ Cart</button>
+              <button class="btn-buynow btn-buynow-card">Buy Now</button>
+            </div>
+          </div>
+        </div>
+        <div class="watch-card reveal" data-name="Solowave Eclipse" data-price="Rs19,92,000" data-desc="Skeleton dial revealing the movement. Platinum case. 44mm.">
+          <div class="card-glow"></div>
+          <div class="card-badge platinum-badge">Limited</div>
+          <div class="card-watch-visual">
+            <img src="https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?w=400&q=80&fit=crop" alt="Solowave Eclipse" class="watch-img" />
+          </div>
+          <div class="card-info">
+            <div class="card-collection">Eclipse Series</div>
+            <h3 class="card-name">Solowave Eclipse</h3>
+            <div class="card-price">Rs19,92,000</div>
+            <div class="card-actions">
+              <button class="btn-quickview btn-qv-card">Quick View</button>
+              <button class="btn-cart btn-cart-card">+ Cart</button>
+              <button class="btn-buynow btn-buynow-card">Buy Now</button>
+            </div>
+          </div>
+        </div>
+        <div class="watch-card reveal" data-name="Solowave Titan" data-price="Rs8,13,400" data-desc="Titanium case with carbon fiber dial. Sport chronograph. 45mm.">
+          <div class="card-glow"></div>
+          <div class="card-watch-visual">
+            <img src="https://images.unsplash.com/photo-1508057198894-247b23fe5ade?w=400&q=80&fit=crop" alt="Solowave Titan" class="watch-img" />
+          </div>
+          <div class="card-info">
+            <div class="card-collection">Titan Series</div>
+            <h3 class="card-name">Solowave Titan</h3>
+            <div class="card-price">Rs8,13,400</div>
+            <div class="card-actions">
+              <button class="btn-quickview btn-qv-card">Quick View</button>
+              <button class="btn-cart btn-cart-card">+ Cart</button>
+              <button class="btn-buynow btn-buynow-card">Buy Now</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SPORT: Apex Runner -->
+        <div class="watch-card sport-card reveal" data-name="Solowave Apex Runner" data-price="Rs5,24,900" data-desc="Premium sports running watch. Black silicone strap, glowing digital display with real-time heart rate, GPS tracking, step counter. Built for champions. 47mm.">
+          <div class="card-glow sport-glow"></div>
+          <div class="card-badge sport-badge">New</div>
+          <div class="card-watch-visual">
+            <img src="https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?w=400&q=80&fit=crop" alt="Solowave Apex Runner" class="watch-img" />
+          </div>
+          <div class="card-info">
+            <div class="card-collection">Sport Series</div>
+            <h3 class="card-name">Solowave Apex Runner</h3>
+            <div class="card-price">Rs5,24,900</div>
+            <div class="card-actions">
+              <button class="btn-quickview btn-qv-card">Quick View</button>
+              <button class="btn-cart btn-cart-card">+ Cart</button>
+              <button class="btn-buynow btn-buynow-card">Buy Now</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SPORT 3: AquaStrike (Diving) -->
+        <div class="watch-card aqua-card reveal" data-name="Solowave AquaStrike" data-price="Rs4,78,500" data-desc="Professional diving & swimming watch. 300m water resistance, lap counter, stroke detector, underwater GPS. Built for aquatic champions. 46mm.">
+          <div class="card-glow aqua-glow"></div>
+          <div class="card-badge aqua-badge">New</div>
+          <div class="card-watch-visual">
+            <img src="https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=400&q=80&fit=crop" alt="Solowave AquaStrike" class="watch-img" />
+          </div>
+          <div class="card-info">
+            <div class="card-collection">Sport Series</div>
+            <h3 class="card-name">Solowave AquaStrike</h3>
+            <div class="card-price">Rs4,78,500</div>
+            <div class="card-actions">
+              <button class="btn-quickview btn-qv-card">Quick View</button>
+              <button class="btn-cart btn-cart-card">+ Cart</button>
+              <button class="btn-buynow btn-buynow-card">Buy Now</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SPORT 4: Summit Pro (Mountaineering) -->
+        <div class="watch-card summit-card reveal" data-name="Solowave Summit Pro" data-price="Rs7,56,000" data-desc="Extreme altitude mountaineering watch. Barometric altimeter, compass, storm alert, avalanche beacon mode. Titanium case. 47mm.">
+          <div class="card-glow summit-glow"></div>
+          <div class="card-badge summit-badge">New</div>
+          <div class="card-watch-visual">
+            <img src="https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?w=400&q=80&fit=crop" alt="Solowave Summit Pro" class="watch-img" />
+          </div>
+          <div class="card-info">
+            <div class="card-collection">Sport Series</div>
+            <h3 class="card-name">Solowave Summit Pro</h3>
+            <div class="card-price">Rs7,56,000</div>
+            <div class="card-actions">
+              <button class="btn-quickview btn-qv-card">Quick View</button>
+              <button class="btn-cart btn-cart-card">+ Cart</button>
+              <button class="btn-buynow btn-buynow-card">Buy Now</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SPORT 5: Blaze X (HIIT Training) -->
+        <div class="watch-card blaze-card reveal" data-name="Solowave Blaze X" data-price="Rs3,89,900" data-desc="High-intensity training watch. VO2 max tracker, recovery advisor, sleep monitor, 50+ sport modes. Lightweight carbon case. 45mm.">
+          <div class="card-glow blaze-glow"></div>
+          <div class="card-badge blaze-badge">New</div>
+          <div class="card-watch-visual">
+            <img src="https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=400&q=80&fit=crop" alt="Solowave Blaze X" class="watch-img" />
+          </div>
+          <div class="card-info">
+            <div class="card-collection">Sport Series</div>
+            <h3 class="card-name">Solowave Blaze X</h3>
+            <div class="card-price">Rs3,89,900</div>
+            <div class="card-actions">
+              <button class="btn-quickview btn-qv-card">Quick View</button>
+              <button class="btn-cart btn-cart-card">+ Cart</button>
+              <button class="btn-buynow btn-buynow-card">Buy Now</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SPORT 6: Stealth Racer (Tactical) -->
+        <div class="watch-card stealth-card reveal" data-name="Solowave Stealth Racer" data-price="Rs6,12,000" data-desc="All-black tactical sports watch. Night vision mode, silent alarm, military-grade shock resistance, 72hr battery. DLC coated titanium. 46mm.">
+          <div class="card-glow stealth-glow"></div>
+          <div class="card-badge stealth-badge">New</div>
+          <div class="card-watch-visual">
+            <img src="https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=400&q=80&fit=crop" alt="Solowave Stealth Racer" class="watch-img" />
+          </div>
+          <div class="card-info">
+            <div class="card-collection">Sport Series</div>
+            <h3 class="card-name">Solowave Stealth Racer</h3>
+            <div class="card-price">Rs6,12,000</div>
+            <div class="card-actions">
+              <button class="btn-quickview btn-qv-card">Quick View</button>
+              <button class="btn-cart btn-cart-card">+ Cart</button>
+              <button class="btn-buynow btn-buynow-card">Buy Now</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SPORT 7: Volt Sprint (Running/Sprint) -->
+        <div class="watch-card volt-card reveal" data-name="Solowave Volt Sprint" data-price="Rs2,98,500" data-desc="Sprint & interval training watch. Real-time pace coach, split timer, power meter, cadence tracker. Neon accent design. 44mm.">
+          <div class="card-glow volt-glow"></div>
+          <div class="card-badge volt-badge">New</div>
+          <div class="card-watch-visual">
+            <img src="https://images.unsplash.com/photo-1622434641406-a158123450f9?w=400&q=80&fit=crop" alt="Solowave Volt Sprint" class="watch-img" />
+          </div>
+          <div class="card-info">
+            <div class="card-collection">Sport Series</div>
+            <h3 class="card-name">Solowave Volt Sprint</h3>
+            <div class="card-price">Rs2,98,500</div>
+            <div class="card-actions">
+              <button class="btn-quickview btn-qv-card">Quick View</button>
+              <button class="btn-cart btn-cart-card">+ Cart</button>
+              <button class="btn-buynow btn-buynow-card">Buy Now</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SPORT 8: Iron Endure (Triathlon) -->
+        <div class="watch-card iron-card reveal" data-name="Solowave Iron Endure" data-price="Rs5,34,000" data-desc="Triathlon & endurance watch. Swim-bike-run transition mode, 20hr GPS battery, nutrition timer, race predictor. 45mm.">
+          <div class="card-glow iron-glow"></div>
+          <div class="card-badge iron-badge">New</div>
+          <div class="card-watch-visual">
+            <img src="https://images.unsplash.com/photo-1533139502658-0198f920d8e8?w=400&q=80&fit=crop" alt="Solowave Iron Endure" class="watch-img" />
+          </div>
+          <div class="card-info">
+            <div class="card-collection">Sport Series</div>
+            <h3 class="card-name">Solowave Iron Endure</h3>
+            <div class="card-price">Rs5,34,000</div>
+            <div class="card-actions">
+              <button class="btn-quickview btn-qv-card">Quick View</button>
+              <button class="btn-cart btn-cart-card">+ Cart</button>
+              <button class="btn-buynow btn-buynow-card">Buy Now</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SPORT 9: Peak Force (Gym/Strength) -->
+        <div class="watch-card sport-card peak-card reveal" data-name="Solowave Peak Force" data-price="Rs4,45,000" data-desc="Gym & strength training watch. Rep counter, muscle load tracker, rest timer, body composition sensor. Rugged matte finish. 46mm.">
+          <div class="card-glow peak-glow"></div>
+          <div class="card-badge peak-badge">New</div>
+          <div class="sport-card-banner">
+            <span class="sport-tag peak-tag">🏋 Rep Count</span>
+            <span class="sport-tag peak-tag">💪 Muscle Load</span>
+            <span class="sport-tag peak-tag">⏸ Rest Timer</span>
+          </div>
+          <div class="card-watch-visual">
+            <img src="https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?w=400&q=80&fit=crop" alt="Solowave Peak Force" class="watch-img" />
+          </div>
+          <div class="card-info">
+            <div class="card-collection">Sport Series</div>
+            <h3 class="card-name">Solowave Peak Force</h3>
+            <div class="card-price">Rs4,45,000</div>
+            <div class="card-actions">
+              <button class="btn-quickview btn-qv-card">Quick View</button>
+              <button class="btn-cart btn-cart-card">+ Cart</button>
+              <button class="btn-buynow btn-buynow-card">Buy Now</button>
+            </div>
+          </div>
+        </div>
+        <div class="watch-card reveal" data-name="Solowave Celestia" data-price="Rs26,14,500" data-desc="Celestial blue enamel dial with diamond hour markers. 18k white gold. 39mm.">
+          <div class="card-glow"></div>
+          <div class="card-badge blue-badge">Exclusive</div>
+          <div class="card-watch-visual">
+            <img src="https://images.unsplash.com/photo-1587836374828-4dbafa94cf0e?w=400&q=80&fit=crop" alt="Solowave Celestia" class="watch-img" />
+          </div>
+          <div class="card-info">
+            <div class="card-collection">Celestia Series</div>
+            <h3 class="card-name">Solowave Celestia</h3>
+            <div class="card-price">Rs26,14,500</div>
+            <div class="card-actions">
+              <button class="btn-quickview btn-qv-card">Quick View</button>
+              <button class="btn-cart btn-cart-card">+ Cart</button>
+              <button class="btn-buynow btn-buynow-card">Buy Now</button>
+            </div>
+          </div>
+        </div>
+        <div class="watch-card reveal" data-name="Solowave Phantom" data-price="Rs12,61,600" data-desc="All-black DLC coated case with luminous dial. Stealth edition. 43mm.">
+          <div class="card-glow"></div>
+          <div class="card-watch-visual">
+            <img src="https://images.unsplash.com/photo-1548171915-e79a380a2a4b?w=400&q=80&fit=crop" alt="Solowave Phantom" class="watch-img" />
+          </div>
+          <div class="card-info">
+            <div class="card-collection">Phantom Series</div>
+            <h3 class="card-name">Solowave Phantom</h3>
+            <div class="card-price">Rs12,61,600</div>
+            <div class="card-actions">
+              <button class="btn-quickview btn-qv-card">Quick View</button>
+              <button class="btn-cart btn-cart-card">+ Cart</button>
+              <button class="btn-buynow btn-buynow-card">Buy Now</button>
+            </div>
+          </div>
+        </div>
+        <div class="watch-card reveal" data-name="Solowave Imperiale" data-price="Rs39,84,000" data-desc="Grand complication with perpetual calendar, minute repeater & moonphase. 18k rose gold. 41mm.">
+          <div class="card-glow"></div>
+          <div class="card-badge rose-badge">Ultra Rare</div>
+          <div class="card-watch-visual">
+            <img src="https://images.unsplash.com/photo-1600003014755-ba31aa59c4b6?w=400&q=80&fit=crop" alt="Solowave Imperiale" class="watch-img" />
+          </div>
+          <div class="card-info">
+            <div class="card-collection">Imperiale Series</div>
+            <h3 class="card-name">Solowave Imperiale</h3>
+            <div class="card-price">Rs39,84,000</div>
+            <div class="card-actions">
+              <button class="btn-quickview btn-qv-card">Quick View</button>
+              <button class="btn-cart btn-cart-card">+ Cart</button>
+              <button class="btn-buynow btn-buynow-card">Buy Now</button>
+            </div>
+          </div>
+        </div>
+        <div class="watch-card reveal" data-name="Solowave Sovereign" data-price="Rs60,17,500" data-desc="Hand-engraved platinum case. Flying tourbillon with 72-hour power reserve. 38mm.">
+          <div class="card-glow"></div>
+          <div class="card-badge plat-badge">Platinum</div>
+          <div class="card-watch-visual">
+            <img src="https://images.unsplash.com/photo-1548171915-e79a380a2a4b?w=400&q=80&fit=crop" alt="Solowave Sovereign" class="watch-img" />
+          </div>
+          <div class="card-info">
+            <div class="card-collection">Sovereign Series</div>
+            <h3 class="card-name">Solowave Sovereign</h3>
+            <div class="card-price">Rs60,17,500</div>
+            <div class="card-actions">
+              <button class="btn-quickview btn-qv-card">Quick View</button>
+              <button class="btn-cart btn-cart-card">+ Cart</button>
+              <button class="btn-buynow btn-buynow-card">Buy Now</button>
+            </div>
+          </div>
+        </div>
+        <div class="watch-card reveal" data-name="Solowave Eternum" data-price="Rs78,85,000" data-desc="Baguette diamond bezel, 18k white gold, skeletonized perpetual tourbillon. Only 25 pieces.">
+          <div class="card-glow"></div>
+          <div class="card-badge diamond-badge">25 Pieces Only</div>
+          <div class="card-watch-visual">
+            <img src="https://images.unsplash.com/photo-1619134778706-7015533a6150?w=400&q=80&fit=crop" alt="Solowave Eternum" class="watch-img" />
+          </div>
+          <div class="card-info">
+            <div class="card-collection">Eternum Series</div>
+            <h3 class="card-name">Solowave Eternum</h3>
+            <div class="card-price">Rs78,85,000</div>
+            <div class="card-actions">
+              <button class="btn-quickview btn-qv-card">Quick View</button>
+              <button class="btn-cart btn-cart-card">+ Cart</button>
+              <button class="btn-buynow btn-buynow-card">Buy Now</button>
+            </div>
+          </div>
+        </div>
+        <div class="watch-card reveal" data-name="Solowave Regalis" data-price="Rs1,06,24,000" data-desc="Meteorite dial, 950 platinum case, hand-wound minute repeater. Bespoke commission only.">
+          <div class="card-glow"></div>
+          <div class="card-badge meteor-badge">Bespoke</div>
+          <div class="card-watch-visual">
+            <img src="https://images.unsplash.com/photo-1585123334904-845d60e97b29?w=400&q=80&fit=crop" alt="Solowave Regalis" class="watch-img" />
+          </div>
+          <div class="card-info">
+            <div class="card-collection">Regalis Series</div>
+            <h3 class="card-name">Solowave Regalis</h3>
+            <div class="card-price">Rs1,06,24,000</div>
+            <div class="card-actions">
+              <button class="btn-quickview btn-qv-card">Quick View</button>
+              <button class="btn-cart btn-cart-card">+ Cart</button>
+              <button class="btn-buynow btn-buynow-card">Buy Now</button>
+            </div>
+          </div>
+        </div>
+        <div class="watch-card reveal" data-name="Solowave Apex One" data-price="Rs1,74,30,000" data-desc="Full diamond pavé case & dial. 18k white gold. Tourbillon with celestial chart. 10 pieces worldwide.">
+          <div class="card-glow"></div>
+          <div class="card-badge apex-badge">10 Worldwide</div>
+          <div class="card-watch-visual">
+            <img src="https://images.unsplash.com/photo-1551816230-ef5deaed4a26?w=400&q=80&fit=crop" alt="Solowave Apex One" class="watch-img" />
+          </div>
+          <div class="card-info">
+            <div class="card-collection">Apex Series</div>
+            <h3 class="card-name">Solowave Apex One</h3>
+            <div class="card-price">Rs1,74,30,000</div>
+            <div class="card-actions">
+              <button class="btn-quickview btn-qv-card">Quick View</button>
+              <button class="btn-cart btn-cart-card">+ Cart</button>
+              <button class="btn-buynow btn-buynow-card">Buy Now</button>
+            </div>
+          </div>
+        </div>
+        <div class="watch-card reveal ultra-card" data-name="Solowave Infinitum" data-price="Rs4,15,00,000" data-desc="The ultimate Solowave. 1,200 VVS diamonds, 18k gold movement, perpetual equation of time. 1 of 1.">
+          <div class="card-glow ultra-glow"></div>
+          <div class="card-badge ultra-badge">1 of 1</div>
+          <div class="card-watch-visual">
+            <img src="https://images.unsplash.com/photo-1600003014755-ba31aa59c4b6?w=400&q=80&fit=crop" alt="Solowave Infinitum" class="watch-img" />
+          </div>
+          <div class="card-info">
+            <div class="card-collection">Infinitum  The Masterpiece</div>
+            <h3 class="card-name">Solowave Infinitum</h3>
+            <div class="card-price ultra-price">Rs4,15,00,000</div>
+            <div class="card-actions">
+              <button class="btn-quickview btn-qv-card">Quick View</button>
+              <button class="btn-cart btn-cart-card">+ Cart</button>
+              <button class="btn-buynow btn-buynow-card">Buy Now</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <div class="about-bg-text">SOLOWAVE</div>
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-left reveal">
+          <div class="section-eyebrow">Our Story</div>
+          <h2 class="about-quote">"We do not make watches. We sculpt time."</h2>
+          <div class="about-signature"> Founder, Solowave</div>
+        </div>
+        <div class="about-right">
+          <div class="about-stat-row reveal">
+            <div class="about-stat"><span class="stat-num">25+</span><span class="stat-label">Years of Mastery</span></div>
+            <div class="about-stat"><span class="stat-num">180</span><span class="stat-label">Artisans</span></div>
+            <div class="about-stat"><span class="stat-num">12K+</span><span class="stat-label">Timepieces Crafted</span></div>
+          </div>
+          <p class="about-text reveal">Born in the ateliers of Geneva, Solowave represents the pinnacle of horological artistry. Every component is hand-finished by master craftsmen who dedicate their lives to the pursuit of perfection.</p>
+          <p class="about-text reveal">We source only the finest materials  18-karat gold, grade-5 titanium, sapphire crystal, and movements assembled under microscopes. Each watch takes over 400 hours to complete.</p>
+          <a href="#collection" class="btn-outline reveal">Discover Our Heritage</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <section class="categories" id="categories">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-eyebrow">Explore</div>
+        <h2 class="section-title">Our Collections</h2>
+      </div>
+      <div class="categories-grid">
+
+        <!-- LUXURY -->
+        <div class="category-card reveal">
+          <div class="category-watches">
+            <div class="cat-watch-stack">
+              <img src="https://images.unsplash.com/photo-1547996160-81dfa63595aa?w=300&q=85&fit=crop" alt="Luxury Watch" class="cat-watch cat-w1" />
+              <img src="https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=300&q=85&fit=crop" alt="Luxury Watch" class="cat-watch cat-w2" />
+              <img src="https://images.unsplash.com/photo-1612817288484-6f916006741a?w=300&q=85&fit=crop" alt="Luxury Watch" class="cat-watch cat-w3" />
+            </div>
+          </div>
+          <div class="cat-label-row">
+            <span class="cat-count">8 Pieces</span>
+          </div>
+          <h3 class="category-name">Luxury</h3>
+          <p class="category-desc">Precious metals, rare gemstones, and haute horlogerie complications for the discerning collector.</p>
+          <a href="#collection" class="category-link">Explore →</a>
+        </div>
+
+        <!-- SPORT -->
+        <div class="category-card reveal">
+          <div class="category-watches">
+            <div class="cat-watch-stack">
+              <img src="https://images.unsplash.com/photo-1508057198894-247b23fe5ade?w=300&q=85&fit=crop" alt="Sport Watch" class="cat-watch cat-w1" />
+              <img src="https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?w=300&q=85&fit=crop" alt="Sport Watch" class="cat-watch cat-w2" />
+              <img src="https://images.unsplash.com/photo-1548171915-e79a380a2a4b?w=300&q=85&fit=crop" alt="Sport Watch" class="cat-watch cat-w3" />
+            </div>
+          </div>
+          <div class="cat-label-row">
+            <span class="cat-count">5 Pieces</span>
+          </div>
+          <h3 class="category-name">Sport</h3>
+          <p class="category-desc">Engineered for performance. Titanium cases, ceramic bezels, and 300m water resistance.</p>
+          <a href="#collection" class="category-link">Explore →</a>
+        </div>
+
+        <!-- SMART -->
+        <div class="category-card reveal">
+          <div class="category-watches">
+            <div class="cat-watch-stack">
+              <img src="https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=300&q=85&fit=crop" alt="Smart Watch" class="cat-watch cat-w1" />
+              <img src="https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=300&q=85&fit=crop" alt="Smart Watch" class="cat-watch cat-w2" />
+              <img src="https://images.unsplash.com/photo-1544117519-31a4b719223d?w=300&q=85&fit=crop" alt="Smart Watch" class="cat-watch cat-w3" />
+            </div>
+          </div>
+          <div class="cat-label-row">
+            <span class="cat-count">4 Pieces</span>
+          </div>
+          <h3 class="category-name">Smart</h3>
+          <p class="category-desc">The future of timekeeping. Cutting-edge technology wrapped in Swiss craftsmanship.</p>
+          <a href="#collection" class="category-link">Explore →</a>
+        </div>
+
+        <!-- CLASSIC -->
+        <div class="category-card reveal">
+          <div class="category-watches">
+            <div class="cat-watch-stack">
+              <img src="https://images.unsplash.com/photo-1548171915-e79a380a2a4b?w=300&q=85&fit=crop" alt="Classic Watch" class="cat-watch cat-w1" />
+              <img src="https://images.unsplash.com/photo-1587836374828-4dbafa94cf0e?w=300&q=85&fit=crop" alt="Classic Watch" class="cat-watch cat-w2" />
+              <img src="https://images.unsplash.com/photo-1606744837616-56c9a5c6a6eb?w=300&q=85&fit=crop" alt="Classic Watch" class="cat-watch cat-w3" />
+            </div>
+          </div>
+          <div class="cat-label-row">
+            <span class="cat-count">6 Pieces</span>
+          </div>
+          <h3 class="category-name">Classic</h3>
+          <p class="category-desc">Timeless elegance. Dress watches that transcend trends and define generations.</p>
+          <a href="#collection" class="category-link">Explore →</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCT SPOTLIGHT -->
+  <section class="product" id="product">
+    <div class="container">
+      <div class="product-grid">
+        <div class="product-visual reveal">
+          <div class="product-watch-wrap">
+            <div class="product-watch-glow"></div>
+            <div class="product-img-frame">
+              <img src="https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=700&q=90&fit=crop" alt="Solowave Aurum Flagship" class="product-main-img" id="productMainImg" />
+              <div class="product-img-overlay"></div>
+              <div class="product-img-badge">Flagship 2024</div>
+            </div>
+            <div class="product-thumb-row">
+              <img src="https://images.unsplash.com/photo-1547996160-81dfa63595aa?w=200&q=80&fit=crop" alt="View 2" class="product-thumb active-thumb" onclick="switchProductImg(this,'https://images.unsplash.com/photo-1547996160-81dfa63595aa?w=700&q=90&fit=crop')" />
+              <img src="https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?w=200&q=80&fit=crop" alt="View 3" class="product-thumb" onclick="switchProductImg(this,'https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?w=700&q=90&fit=crop')" />
+              <img src="https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=200&q=80&fit=crop" alt="View 1" class="product-thumb" onclick="switchProductImg(this,'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=700&q=90&fit=crop')" />
+              <img src="https://images.unsplash.com/photo-1606744837616-56c9a5c6a6eb?w=200&q=80&fit=crop" alt="View 4" class="product-thumb" onclick="switchProductImg(this,'https://images.unsplash.com/photo-1606744837616-56c9a5c6a6eb?w=700&q=90&fit=crop')" />
+            </div>
+            <div class="watch-face product-watch-face" id="productWatch" style="display:none">
+              <div class="watch-case gold-case">
+                <div class="watch-bezel gold-bezel">
+                  <div class="watch-dial gold-dial">
+                    <div class="watch-brand-text">SOLOWAVE</div>
+                    <div class="watch-swiss-text">SWISS MADE</div>
+                    <div class="tick-marks" id="productTicks"></div>
+                    <div class="hand hour-hand" id="productHour"></div>
+                    <div class="hand minute-hand" id="productMinute"></div>
+                    <div class="hand second-hand gold-second" id="productSecond"></div>
+                    <div class="center-dot gold-dot"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="watch-crown gold-crown"></div>
+            </div>
+          </div>
+        </div>
+        <div class="product-info reveal">
+          <div class="section-eyebrow">Flagship Model</div>
+          <h2 class="product-title">Solowave Aurum</h2>
+          <div class="product-price">Rs15,68,700</div>
+          <p class="product-desc">The Aurum represents the apex of Solowave's craft. A tourbillon movement visible through the sapphire caseback, housed in a hand-polished 18-karat gold case.</p>
+          <div class="product-specs">
+            <div class="spec-row"><span class="spec-label">Case Material</span><span class="spec-value">18k Yellow Gold</span></div>
+            <div class="spec-row"><span class="spec-label">Movement</span><span class="spec-value">Swiss Tourbillon Automatic</span></div>
+            <div class="spec-row"><span class="spec-label">Crystal</span><span class="spec-value">Sapphire, Anti-reflective</span></div>
+            <div class="spec-row"><span class="spec-label">Water Resistance</span><span class="spec-value">100 Metres</span></div>
+            <div class="spec-row"><span class="spec-label">Case Diameter</span><span class="spec-value">40mm</span></div>
+            <div class="spec-row"><span class="spec-label">Warranty</span><span class="spec-value">5 Years International</span></div>
+          </div>
+          <div class="product-actions">
+            <button class="btn-primary btn-cart-main" onclick="addToCartDirect('Solowave Aurum','Rs15,68,700','https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=400&q=80&fit=crop')">Add to Collection</button>
+            <button class="btn-outline">Request Bespoke</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="testimonials" id="testimonials">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-eyebrow">Client Stories</div>
+        <h2 class="section-title">Words of Excellence</h2>
+        <p class="section-subtitle">What our clients say about their Solowave experience</p>
+      </div>
+
+      <div class="testimonials-slider" id="testimonialsSlider">
+
+        <!-- 1 -->
+        <div class="testimonial-card active">
+          <div class="t-top-row">
+            <div class="testimonial-stars">★★★★★</div>
+            <span class="t-verified">✓ Verified Purchase</span>
+          </div>
+          <div class="t-watch-tag">Solowave Aurum</div>
+          <p class="testimonial-text">"The Solowave Aurum is not just a watch — it is a statement. The craftsmanship is beyond anything I have ever worn. Every glance at my wrist reminds me why I chose Solowave."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">A</div>
+            <div class="author-info">
+              <div class="author-name">Alexander V. <span class="t-flag">🇦🇪</span></div>
+              <div class="author-title">CEO, Vantage Capital · Dubai</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2 -->
+        <div class="testimonial-card">
+          <div class="t-top-row">
+            <div class="testimonial-stars">★★★★★</div>
+            <span class="t-verified">✓ Verified Purchase</span>
+          </div>
+          <div class="t-watch-tag">Solowave Celestia</div>
+          <p class="testimonial-text">"I have owned timepieces from the world's finest houses. Solowave stands apart. The Celestia is a work of art that happens to tell time. Absolutely breathtaking."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">I</div>
+            <div class="author-info">
+              <div class="author-name">Isabella M. <span class="t-flag">🇲🇨</span></div>
+              <div class="author-title">Art Curator · Monaco</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3 -->
+        <div class="testimonial-card">
+          <div class="t-top-row">
+            <div class="testimonial-stars">★★★★★</div>
+            <span class="t-verified">✓ Verified Purchase</span>
+          </div>
+          <div class="t-watch-tag">Solowave Eclipse</div>
+          <p class="testimonial-text">"The attention to detail is extraordinary. My Solowave Eclipse arrived in packaging that itself felt like a luxury experience. The watch is simply flawless."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">J</div>
+            <div class="author-info">
+              <div class="author-name">James R. <span class="t-flag">🇬🇧</span></div>
+              <div class="author-title">Architect · London</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 -->
+        <div class="testimonial-card">
+          <div class="t-top-row">
+            <div class="testimonial-stars">★★★★★</div>
+            <span class="t-verified">✓ Verified Purchase</span>
+          </div>
+          <div class="t-watch-tag">Solowave Noir I</div>
+          <p class="testimonial-text">"Gifted the Noir I to my husband on our anniversary. He hasn't taken it off since. The midnight dial with rose gold indices is stunning in person — photos don't do it justice."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">P</div>
+            <div class="author-info">
+              <div class="author-name">Priya S. <span class="t-flag">🇮🇳</span></div>
+              <div class="author-title">Entrepreneur · Mumbai</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5 -->
+        <div class="testimonial-card">
+          <div class="t-top-row">
+            <div class="testimonial-stars">★★★★★</div>
+            <span class="t-verified">✓ Verified Purchase</span>
+          </div>
+          <div class="t-watch-tag">Solowave Titan</div>
+          <p class="testimonial-text">"As a watch collector for 20 years, I am rarely impressed. The Titan's titanium case and carbon fiber dial are executed with precision I've only seen from Swiss houses twice the price."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">M</div>
+            <div class="author-info">
+              <div class="author-name">Marcus L. <span class="t-flag">🇸🇬</span></div>
+              <div class="author-title">Watch Collector · Singapore</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6 -->
+        <div class="testimonial-card">
+          <div class="t-top-row">
+            <div class="testimonial-stars">★★★★★</div>
+            <span class="t-verified">✓ Verified Purchase</span>
+          </div>
+          <div class="t-watch-tag">Solowave Apex Runner</div>
+          <p class="testimonial-text">"The Apex Runner is the perfect blend of sport and luxury. GPS tracking, heart rate monitor — all in a watch that looks elegant enough for a boardroom. Solowave nailed it."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">R</div>
+            <div class="author-info">
+              <div class="author-name">Rahul K. <span class="t-flag">🇮🇳</span></div>
+              <div class="author-title">Marathon Runner · Delhi</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="testimonial-controls">
+        <button class="t-btn" id="tPrev">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="t-dots">
+          <span class="t-dot active" onclick="goToTestimonial(0)"></span>
+          <span class="t-dot" onclick="goToTestimonial(1)"></span>
+          <span class="t-dot" onclick="goToTestimonial(2)"></span>
+          <span class="t-dot" onclick="goToTestimonial(3)"></span>
+          <span class="t-dot" onclick="goToTestimonial(4)"></span>
+          <span class="t-dot" onclick="goToTestimonial(5)"></span>
+        </div>
+        <button class="t-btn" id="tNext">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+
+      <!-- Overall rating summary -->
+      <div class="t-summary reveal">
+        <div class="t-summary-stars">★★★★★</div>
+        <div class="t-summary-text"><strong>4.9 / 5</strong> based on 2,400+ verified reviews</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="newsletter" id="contact">
+    <div class="newsletter-glow"></div>
+    <div class="container">
+      <div class="newsletter-content reveal">
+        <div class="section-eyebrow">Exclusive Access</div>
+        <h2 class="newsletter-title">Join the Elite Club</h2>
+        <p class="newsletter-sub">Be the first to discover new collections, private events, and bespoke opportunities.</p>
+        <form class="newsletter-form" onsubmit="handleNewsletter(event)">
+          <div class="form-group">
+            <input type="email" placeholder="Your email address" class="newsletter-input" required />
+            <button type="submit" class="btn-newsletter">Join Now</button>
+          </div>
+          <p class="form-note">By joining, you agree to receive exclusive communications from Solowave.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">SOLOWAVE</div>
+          <p class="footer-tagline">Time Redefined</p>
+          <div class="footer-social">
+            <a href="#" class="social-link" aria-label="Instagram">IG</a>
+            <a href="#" class="social-link" aria-label="Twitter">𝕏</a>
+            <a href="#" class="social-link" aria-label="Facebook">FB</a>
+            <a href="#" class="social-link" aria-label="YouTube">YT</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-heading">Collections</h4>
+          <ul class="footer-links">
+            <li><a href="#collection" onclick="document.querySelector('.sf-pill[data-filter=luxury]').click()">Luxury Series</a></li>
+            <li><a href="#collection" onclick="document.querySelector('.sf-pill[data-filter=sport]').click()">Sport Series</a></li>
+            <li><a href="#collection" onclick="document.querySelector('.sf-pill[data-filter=limited]').click()">Limited Editions</a></li>
+            <li><a href="#collection">All Watches</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-heading">Company</h4>
+          <ul class="footer-links">
+            <li><a href="#about">Our Story</a></li>
+            <li><a href="#about">Craftsmanship</a></li>
+            <li><a href="contact.html">Boutiques</a></li>
+            <li><a href="contact.html">Press</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-heading">Contact</h4>
+          <ul class="footer-links">
+            <li><a href="contact.html">Contact Us</a></li>
+            <li><a href="mailto:solowave.watches@gmail.com">solowave.watches@gmail.com</a></li>
+            <li><a href="contact.html">Jamshedpur, India</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 Solowave Watches. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="privacy-policy.html">Privacy Policy</a>
+          <a href="affiliate-disclosure.html">Affiliate Disclosure</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- CART DRAWER -->
+  <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <div class="cart-title">
+        <span class="cart-title-text">Your Collection</span>
+        <span class="cart-item-count" id="cartItemCount">0 items</span>
+      </div>
+      <button class="cart-close-btn" onclick="closeCart()">✕</button>
+    </div>
+    <div class="cart-body" id="cartBody">
+      <div class="cart-empty" id="cartEmpty">
+        <div class="cart-empty-icon">◈</div>
+        <p class="cart-empty-title">Your collection is empty</p>
+        <p class="cart-empty-sub">Discover our timepieces and add them to your collection.</p>
+        <button class="btn-primary" onclick="closeCart(); document.getElementById('collection').scrollIntoView({behavior:'smooth'})">Explore Collection</button>
+      </div>
+      <div class="cart-items" id="cartItems"></div>
+    </div>
+    <div class="cart-footer" id="cartFooter" style="display:none">
+      <div class="cart-subtotal">
+        <span>Subtotal</span>
+        <span id="cartSubtotal">$0</span>
+      </div>
+      <div class="cart-tax">
+        <span>Estimated Tax (8%)</span>
+        <span id="cartTax">$0</span>
+      </div>
+      <div class="cart-total">
+        <span>Total</span>
+        <span id="cartTotal">$0</span>
+      </div>
+      <button class="btn-checkout" onclick="window.location.href='checkout.html'">
+        <span>Proceed to Checkout</span>
+        <span>→</span>
+      </button>
+      <button class="btn-continue" onclick="closeCart()">Continue Shopping</button>
+    </div>
+  </div>
+
+  <!-- CHECKOUT SUCCESS MODAL -->
+  <div class="checkout-modal" id="checkoutModal">
+    <div class="checkout-modal-inner">
+      <div class="checkout-icon">✓</div>
+      <h3 class="checkout-title">Order Confirmed</h3>
+      <p class="checkout-sub">Thank you for your purchase. A Solowave concierge will contact you within 24 hours to arrange delivery of your timepiece.</p>
+      <div class="checkout-order-id" id="checkoutOrderId"></div>
+      <button class="btn-primary" onclick="closeCheckout()">Continue</button>
+    </div>
+  </div>
+
+  <!-- QUICK VIEW MODAL -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal()"></button>
+      <div class="modal-watch">
+        <img src="https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=400&q=80&fit=crop" alt="Solowave Aurum" class="watch-img modal-watch-img" />
+      </div>
+      <div class="modal-info">
+        <div class="section-eyebrow">Quick View</div>
+        <h3 class="modal-name" id="modalName">Solowave Aurum</h3>
+        <div class="modal-price" id="modalPrice">Rs15,68,700</div>
+        <p class="modal-desc" id="modalDesc">18k gold case with champagne dial.</p>
+        <button class="btn-primary" onclick="addToCartFromModal(); closeModal()">Add to Collection</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CART NOTIFICATION -->
+  <div class="cart-toast" id="cartToast"></div>
+
+  <!-- ── GLOBAL SEARCH OVERLAY ── -->
+  <div class="gsearch-overlay" id="gsearchOverlay" role="dialog" aria-modal="true" aria-label="Search">
+    <div class="gsearch-backdrop" id="gsearchBackdrop"></div>
+    <div class="gsearch-panel">
+
+      <!-- Input row -->
+      <div class="gsearch-input-row">
+        <svg class="gsearch-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="gsearchInput" class="gsearch-input" type="text" placeholder="Search watches, series, features…" autocomplete="off" spellcheck="false" />
+        <kbd class="gsearch-esc-hint">ESC</kbd>
+        <button class="gsearch-close" id="gsearchClose" aria-label="Close search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <!-- Quick filter chips inside overlay -->
+      <div class="gsearch-chips" id="gsearchChips">
+        <span class="gsearch-chip-label">Quick filters:</span>
+        <button class="gsearch-chip" data-q="luxury">Luxury</button>
+        <button class="gsearch-chip" data-q="sport">Sport</button>
+        <button class="gsearch-chip" data-q="gold">Gold</button>
+        <button class="gsearch-chip" data-q="platinum">Platinum</button>
+        <button class="gsearch-chip" data-q="limited">Limited</button>
+        <button class="gsearch-chip" data-q="tourbillon">Tourbillon</button>
+        <button class="gsearch-chip" data-q="titanium">Titanium</button>
+        <button class="gsearch-chip" data-q="diamond">Diamond</button>
+      </div>
+
+      <!-- Divider -->
+      <div class="gsearch-divider"></div>
+
+      <!-- Results list -->
+      <div class="gsearch-results" id="gsearchResults">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Footer hint -->
+      <div class="gsearch-footer">
+        <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
+        <span><kbd>↵</kbd> quick view</span>
+        <span><kbd>ESC</kbd> close</span>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="watches-data.js"></script>
+  <script src="script.js"></script>
+<script src="fullstack.js"></script>
+</body>
+</html>
+
+
+
+

@@ -1,0 +1,1077 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In | Solowave Watches</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Montserrat:wght@200;300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ===== VARIABLES ===== */
+    :root {
+      --gold: #c9a84c;
+      --gold-light: #e8c96d;
+      --gold-dark: #a07830;
+      --gold-glow: rgba(201,168,76,0.3);
+      --black: #0a0a0a;
+      --dark: #111111;
+      --dark-2: #1a1a1a;
+      --dark-3: #242424;
+      --dark-4: #2e2e2e;
+      --text: #e8e8e8;
+      --text-muted: #888888;
+      --text-dim: #555555;
+      --white: #ffffff;
+      --glass: rgba(255,255,255,0.03);
+      --glass-border: rgba(201,168,76,0.15);
+      --radius: 12px;
+      --radius-lg: 20px;
+      --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --transition-fast: all 0.2s ease;
+      --error: #e05555;
+      --success: #4caf50;
+    }
+
+    /* ===== DAY MODE ===== */
+    body.day-mode {
+      --black: #f0ece4;
+      --dark: #e8e4dc;
+      --dark-2: #ddd9d0;
+      --dark-3: #d0ccc3;
+      --dark-4: #c4c0b7;
+      --text: #1a1a1a;
+      --text-muted: #555555;
+      --text-dim: #888888;
+      --glass: rgba(0,0,0,0.03);
+      --glass-border: rgba(160,120,48,0.2);
+    }
+
+    /* ===== RESET ===== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      line-height: 1.7;
+      min-height: 100vh;
+      transition: background 0.4s ease, color 0.4s ease;
+    }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; }
+    input, select { font-family: inherit; }
+
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--dark); }
+    ::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 2px; }
+
+    /* ===== NAVBAR ===== */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 20px 0;
+      background: rgba(10,10,10,0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      transition: var(--transition);
+    }
+    body.day-mode .navbar {
+      background: rgba(240,236,228,0.92);
+    }
+    .nav-container {
+      max-width: 1280px; margin: 0 auto; padding: 0 40px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem; font-weight: 700;
+      letter-spacing: 0.3em;
+      color: var(--gold);
+      transition: var(--transition-fast);
+    }
+    .nav-logo:hover { color: var(--gold-light); }
+    .nav-back {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.7rem; font-weight: 500;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--text-muted);
+      transition: var(--transition-fast);
+    }
+    .nav-back svg { transition: transform 0.2s ease; }
+    .nav-back:hover { color: var(--gold); }
+    .nav-back:hover svg { transform: translateX(-3px); }
+
+    /* ===== BACKGROUND ===== */
+    .login-bg {
+      position: fixed; inset: 0; z-index: 0;
+      overflow: hidden;
+    }
+    .bg-glow-1 {
+      position: absolute;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 65%);
+      top: -100px; left: -100px;
+      animation: bgGlow1 8s ease-in-out infinite;
+    }
+    .bg-glow-2 {
+      position: absolute;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(201,168,76,0.05) 0%, transparent 65%);
+      bottom: -80px; right: -80px;
+      animation: bgGlow2 10s ease-in-out infinite;
+    }
+    .bg-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(201,168,76,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,168,76,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    @keyframes bgGlow1 {
+      0%,100% { transform: translate(0,0) scale(1); opacity: 0.7; }
+      50%      { transform: translate(40px,30px) scale(1.1); opacity: 1; }
+    }
+    @keyframes bgGlow2 {
+      0%,100% { transform: translate(0,0) scale(1); opacity: 0.5; }
+      50%      { transform: translate(-30px,-20px) scale(1.15); opacity: 0.9; }
+    }
+
+    /* ===== MAIN LAYOUT ===== */
+    .login-page {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 100px 20px 60px;
+    }
+    .login-wrapper {
+      width: 100%; max-width: 480px;
+    }
+
+    /* ===== BRAND HEADER ===== */
+    .login-brand {
+      text-align: center; margin-bottom: 40px;
+    }
+    .login-brand-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem; font-weight: 700;
+      letter-spacing: 0.4em;
+      background: linear-gradient(135deg, #a07830 0%, #e8c96d 40%, #c9a84c 60%, #f5e6b0 80%, #c9a84c 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      background-size: 200% auto;
+      animation: shimmer 4s linear infinite;
+      display: block; margin-bottom: 8px;
+    }
+    @keyframes shimmer {
+      0%   { background-position: 200% center; }
+      100% { background-position: -200% center; }
+    }
+    .login-brand-divider {
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      margin: 12px 0;
+    }
+    .divider-line {
+      height: 1px; width: 50px;
+      background: linear-gradient(90deg, transparent, var(--gold));
+    }
+    .divider-line:last-child {
+      background: linear-gradient(90deg, var(--gold), transparent);
+    }
+    .divider-diamond {
+      width: 5px; height: 5px;
+      background: var(--gold); transform: rotate(45deg);
+      box-shadow: 0 0 6px var(--gold);
+    }
+    .login-brand-sub {
+      font-size: 0.6rem; letter-spacing: 0.5em;
+      text-transform: uppercase; color: var(--text-muted);
+    }
+
+    /* ===== CARD ===== */
+    .login-card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.4), 0 0 0 1px rgba(201,168,76,0.05);
+      animation: cardIn 0.6s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
+    }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== TABS ===== */
+    .tab-bar {
+      display: flex;
+      border-bottom: 1px solid var(--glass-border);
+    }
+    .tab-btn {
+      flex: 1; padding: 18px 20px;
+      font-size: 0.7rem; font-weight: 600;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--text-muted);
+      background: transparent;
+      border-bottom: 2px solid transparent;
+      transition: var(--transition-fast);
+      position: relative;
+    }
+    .tab-btn.active {
+      color: var(--gold);
+      border-bottom-color: var(--gold);
+      background: rgba(201,168,76,0.04);
+    }
+    .tab-btn:hover:not(.active) { color: var(--text); }
+
+    /* ===== FORM PANELS ===== */
+    .form-panel {
+      display: none;
+      padding: 36px 40px 40px;
+      animation: panelIn 0.35s ease forwards;
+    }
+    .form-panel.active { display: block; }
+    @keyframes panelIn {
+      from { opacity: 0; transform: translateX(10px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ===== FORM ELEMENTS ===== */
+    .form-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .form-label {
+      display: block;
+      font-size: 0.6rem; font-weight: 600;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      transition: color 0.2s ease;
+    }
+    .form-group:focus-within .form-label { color: var(--gold); }
+    .form-input {
+      width: 100%;
+      padding: 13px 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--glass-border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 0.85rem; font-weight: 400;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      outline: none;
+    }
+    body.day-mode .form-input {
+      background: rgba(0,0,0,0.04);
+    }
+    .form-input::placeholder { color: var(--text-dim); }
+    .form-input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
+      background: rgba(201,168,76,0.03);
+    }
+    .form-input.error {
+      border-color: var(--error);
+      box-shadow: 0 0 0 3px rgba(224,85,85,0.12);
+    }
+    .form-input.success {
+      border-color: var(--success);
+    }
+
+    /* Password wrapper */
+    .input-wrap {
+      position: relative;
+    }
+    .input-wrap .form-input {
+      padding-right: 44px;
+    }
+    .toggle-pw {
+      position: absolute; right: 14px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-dim);
+      transition: color 0.2s ease;
+      display: flex; align-items: center;
+      padding: 4px;
+    }
+    .toggle-pw:hover { color: var(--gold); }
+
+    /* Error message */
+    .field-error {
+      font-size: 0.6rem; color: var(--error);
+      margin-top: 5px; letter-spacing: 0.05em;
+      display: none;
+    }
+    .field-error.show { display: block; }
+
+    /* Password strength */
+    .pw-strength {
+      margin-top: 6px; display: none;
+    }
+    .pw-strength.show { display: block; }
+    .pw-strength-bar {
+      height: 3px; border-radius: 2px;
+      background: var(--dark-3);
+      overflow: hidden; margin-bottom: 4px;
+    }
+    .pw-strength-fill {
+      height: 100%; border-radius: 2px;
+      transition: width 0.3s ease, background 0.3s ease;
+      width: 0%;
+    }
+    .pw-strength-label {
+      font-size: 0.55rem; letter-spacing: 0.1em;
+      color: var(--text-dim);
+    }
+
+    /* Remember me / checkbox row */
+    .form-check-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .form-check {
+      display: flex; align-items: center; gap: 10px;
+      cursor: pointer;
+    }
+    .form-check input[type="checkbox"] {
+      appearance: none; -webkit-appearance: none;
+      width: 16px; height: 16px;
+      border: 1px solid var(--glass-border);
+      border-radius: 3px;
+      background: transparent;
+      cursor: pointer;
+      position: relative;
+      transition: border-color 0.2s ease, background 0.2s ease;
+      flex-shrink: 0;
+    }
+    .form-check input[type="checkbox"]:checked {
+      background: var(--gold);
+      border-color: var(--gold);
+    }
+    .form-check input[type="checkbox"]:checked::after {
+      content: '';
+      position: absolute; top: 2px; left: 5px;
+      width: 4px; height: 7px;
+      border: 2px solid var(--black);
+      border-top: none; border-left: none;
+      transform: rotate(45deg);
+    }
+    .form-check-label {
+      font-size: 0.7rem; color: var(--text-muted);
+      user-select: none;
+    }
+    .forgot-link {
+      font-size: 0.65rem; color: var(--gold);
+      letter-spacing: 0.05em;
+      transition: color 0.2s ease;
+    }
+    .forgot-link:hover { color: var(--gold-light); text-decoration: underline; }
+
+    /* ===== SUBMIT BUTTON ===== */
+    .btn-submit {
+      width: 100%;
+      padding: 15px 24px;
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-light));
+      color: var(--black);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.25em; text-transform: uppercase;
+      border-radius: 6px;
+      transition: var(--transition);
+      position: relative; overflow: hidden;
+      border: none;
+    }
+    .btn-submit::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      opacity: 0; transition: opacity 0.3s ease;
+    }
+    .btn-submit:hover::before { opacity: 1; }
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 40px rgba(201,168,76,0.4);
+    }
+    .btn-submit:active { transform: translateY(0); }
+    .btn-submit span { position: relative; z-index: 1; }
+    .btn-submit.loading span { opacity: 0; }
+    .btn-submit.loading::after {
+      content: '';
+      position: absolute; top: 50%; left: 50%;
+      width: 18px; height: 18px;
+      border: 2px solid rgba(0,0,0,0.3);
+      border-top-color: var(--black);
+      border-radius: 50%;
+      transform: translate(-50%,-50%);
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: translate(-50%,-50%) rotate(360deg); } }
+
+    /* ===== GLOBAL ALERT ===== */
+    .form-alert {
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-size: 0.72rem; font-weight: 500;
+      margin-bottom: 20px;
+      display: none;
+      animation: alertIn 0.3s ease;
+    }
+    @keyframes alertIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .form-alert.show { display: flex; align-items: center; gap: 10px; }
+    .form-alert.error {
+      background: rgba(224,85,85,0.1);
+      border: 1px solid rgba(224,85,85,0.3);
+      color: #e07070;
+    }
+    .form-alert.success {
+      background: rgba(76,175,80,0.1);
+      border: 1px solid rgba(76,175,80,0.3);
+      color: #7ec880;
+    }
+
+    /* ===== DIVIDER ===== */
+    .form-divider {
+      display: flex; align-items: center; gap: 12px;
+      margin: 24px 0;
+    }
+    .form-divider-line {
+      flex: 1; height: 1px;
+      background: var(--glass-border);
+    }
+    .form-divider-text {
+      font-size: 0.6rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--text-dim);
+    }
+
+    /* ===== SWITCH PROMPT ===== */
+    .switch-prompt {
+      text-align: center; margin-top: 24px;
+      font-size: 0.72rem; color: var(--text-muted);
+    }
+    .switch-link {
+      color: var(--gold); font-weight: 600;
+      cursor: pointer; transition: color 0.2s ease;
+    }
+    .switch-link:hover { color: var(--gold-light); }
+
+    /* ===== TOAST ===== */
+    .toast {
+      position: fixed; bottom: 32px; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--dark-2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      padding: 14px 24px;
+      font-size: 0.75rem; font-weight: 500;
+      color: var(--text);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+      z-index: 9999;
+      opacity: 0;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .toast.show {
+      opacity: 1; transform: translateX(-50%) translateY(0);
+    }
+    .toast.success { border-color: rgba(76,175,80,0.4); color: #7ec880; }
+    .toast.error   { border-color: rgba(224,85,85,0.4); color: #e07070; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 520px) {
+      .nav-container { padding: 0 20px; }
+      .form-panel { padding: 28px 24px 32px; }
+      .form-row { grid-template-columns: 1fr; gap: 0; }
+      .login-brand-logo { font-size: 1.6rem; }
+    }
+    @media (max-width: 360px) {
+      .form-panel { padding: 24px 18px 28px; }
+    }
+  </style>
+  <!-- Firebase Auth — loads swLogin, swRegister, swLogout, swForgotPassword -->
+  <script type="module" src="auth.js"></script>
+</head>
+<body>
+
+  <!-- BACKGROUND -->
+  <div class="login-bg">
+    <div class="bg-glow-1"></div>
+    <div class="bg-glow-2"></div>
+    <div class="bg-grid"></div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">SOLOWAVE</a>
+      <a href="index.html" class="nav-back">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+        </svg>
+        Back to Store
+      </a>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="login-page">
+    <div class="login-wrapper">
+
+      <!-- Brand -->
+      <div class="login-brand">
+        <span class="login-brand-logo">SOLOWAVE</span>
+        <div class="login-brand-divider">
+          <div class="divider-line"></div>
+          <div class="divider-diamond"></div>
+          <div class="divider-line"></div>
+        </div>
+        <div class="login-brand-sub">Watches &nbsp;&middot;&nbsp; Est. 2024</div>
+      </div>
+
+      <!-- Card -->
+      <div class="login-card">
+
+        <!-- Tabs -->
+        <div class="tab-bar" role="tablist">
+          <button class="tab-btn active" id="tabSignin" role="tab" aria-selected="true" aria-controls="panelSignin" onclick="switchTab('signin')">Sign In</button>
+          <button class="tab-btn" id="tabRegister" role="tab" aria-selected="false" aria-controls="panelRegister" onclick="switchTab('register')">Create Account</button>
+        </div>
+
+        <!-- ===== SIGN IN PANEL ===== -->
+        <div class="form-panel active" id="panelSignin" role="tabpanel" aria-labelledby="tabSignin">
+          <div class="form-alert" id="signinAlert" role="alert"></div>
+
+          <form id="signinForm" novalidate autocomplete="on">
+
+            <!-- Email -->
+            <div class="form-group">
+              <label class="form-label" for="signinEmail">Email Address</label>
+              <input type="email" id="signinEmail" name="email" class="form-input"
+                placeholder="your@email.com" autocomplete="email" required />
+              <div class="field-error" id="signinEmailErr"></div>
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+              <label class="form-label" for="signinPassword">Password</label>
+              <div class="input-wrap">
+                <input type="password" id="signinPassword" name="password" class="form-input"
+                  placeholder="Enter your password" autocomplete="current-password" required />
+                <button type="button" class="toggle-pw" onclick="togglePw('signinPassword', this)" aria-label="Toggle password visibility">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="field-error" id="signinPasswordErr"></div>
+            </div>
+
+            <!-- Remember + Forgot -->
+            <div class="form-check-row">
+              <label class="form-check">
+                <input type="checkbox" id="rememberMe" name="remember" />
+                <span class="form-check-label">Remember me</span>
+              </label>
+              <a href="#" class="forgot-link" onclick="forgotPassword(event)">Forgot Password?</a>
+            </div>
+
+            <button type="submit" class="btn-submit" id="signinBtn">
+              <span>Sign In</span>
+            </button>
+          </form>
+
+          <div class="switch-prompt">
+            Don&rsquo;t have an account?
+            <span class="switch-link" onclick="switchTab('register')">Create one</span>
+          </div>
+        </div>
+
+        <!-- ===== REGISTER PANEL ===== -->
+        <div class="form-panel" id="panelRegister" role="tabpanel" aria-labelledby="tabRegister">
+          <div class="form-alert" id="registerAlert" role="alert"></div>
+
+          <form id="registerForm" novalidate autocomplete="on">
+
+            <!-- Name row -->
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="regFirstName">First Name</label>
+                <input type="text" id="regFirstName" name="firstName" class="form-input"
+                  placeholder="John" autocomplete="given-name" required />
+                <div class="field-error" id="regFirstNameErr"></div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="regLastName">Last Name</label>
+                <input type="text" id="regLastName" name="lastName" class="form-input"
+                  placeholder="Doe" autocomplete="family-name" required />
+                <div class="field-error" id="regLastNameErr"></div>
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+              <label class="form-label" for="regEmail">Email Address</label>
+              <input type="email" id="regEmail" name="email" class="form-input"
+                placeholder="your@email.com" autocomplete="email" required />
+              <div class="field-error" id="regEmailErr"></div>
+            </div>
+
+            <!-- Phone -->
+            <div class="form-group">
+              <label class="form-label" for="regPhone">Phone Number</label>
+              <input type="tel" id="regPhone" name="phone" class="form-input"
+                placeholder="+91 98765 43210" autocomplete="tel" required />
+              <div class="field-error" id="regPhoneErr"></div>
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+              <label class="form-label" for="regPassword">Password</label>
+              <div class="input-wrap">
+                <input type="password" id="regPassword" name="password" class="form-input"
+                  placeholder="Min. 6 characters" autocomplete="new-password" required
+                  oninput="checkStrength(this.value)" />
+                <button type="button" class="toggle-pw" onclick="togglePw('regPassword', this)" aria-label="Toggle password visibility">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="pw-strength" id="pwStrength">
+                <div class="pw-strength-bar"><div class="pw-strength-fill" id="pwFill"></div></div>
+                <div class="pw-strength-label" id="pwLabel">Strength</div>
+              </div>
+              <div class="field-error" id="regPasswordErr"></div>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="form-group">
+              <label class="form-label" for="regConfirm">Confirm Password</label>
+              <div class="input-wrap">
+                <input type="password" id="regConfirm" name="confirm" class="form-input"
+                  placeholder="Repeat password" autocomplete="new-password" required />
+                <button type="button" class="toggle-pw" onclick="togglePw('regConfirm', this)" aria-label="Toggle password visibility">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="field-error" id="regConfirmErr"></div>
+            </div>
+
+            <button type="submit" class="btn-submit" id="registerBtn">
+              <span>Create Account</span>
+            </button>
+          </form>
+
+          <div class="switch-prompt">
+            Already have an account?
+            <span class="switch-link" onclick="switchTab('signin')">Sign in</span>
+          </div>
+        </div>
+
+      </div><!-- /login-card -->
+    </div><!-- /login-wrapper -->
+  </main>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    /* ============================================================
+       THEME: apply saved day/night mode on load
+    ============================================================ */
+    (function(){
+      var saved = localStorage.getItem('solowaveTheme');
+      if(!saved){
+        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        saved = prefersDark ? 'night' : 'day';
+      }
+      if(saved === 'day') document.body.classList.add('day-mode');
+    })();
+
+    /* ============================================================
+       TAB SWITCHING
+    ============================================================ */
+    function switchTab(tab){
+      var panels = { signin: 'panelSignin', register: 'panelRegister' };
+      var tabs   = { signin: 'tabSignin',   register: 'tabRegister'   };
+
+      Object.keys(panels).forEach(function(key){
+        var panel = document.getElementById(panels[key]);
+        var btn   = document.getElementById(tabs[key]);
+        if(key === tab){
+          panel.classList.add('active');
+          btn.classList.add('active');
+          btn.setAttribute('aria-selected','true');
+        } else {
+          panel.classList.remove('active');
+          btn.classList.remove('active');
+          btn.setAttribute('aria-selected','false');
+        }
+      });
+
+      // Clear alerts when switching
+      clearAlert('signinAlert');
+      clearAlert('registerAlert');
+    }
+
+    /* ============================================================
+       TOGGLE PASSWORD VISIBILITY
+    ============================================================ */
+    function togglePw(inputId, btn){
+      var inp = document.getElementById(inputId);
+      if(!inp) return;
+      var isHidden = inp.type === 'password';
+      inp.type = isHidden ? 'text' : 'password';
+      btn.innerHTML = isHidden
+        ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
+        : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+    }
+
+    /* ============================================================
+       PASSWORD STRENGTH
+    ============================================================ */
+    function checkStrength(val){
+      var wrap  = document.getElementById('pwStrength');
+      var fill  = document.getElementById('pwFill');
+      var label = document.getElementById('pwLabel');
+      if(!wrap || !fill || !label) return;
+
+      if(!val){ wrap.classList.remove('show'); return; }
+      wrap.classList.add('show');
+
+      var score = 0;
+      if(val.length >= 6)  score++;
+      if(val.length >= 10) score++;
+      if(/[A-Z]/.test(val)) score++;
+      if(/[0-9]/.test(val)) score++;
+      if(/[^A-Za-z0-9]/.test(val)) score++;
+
+      var levels = [
+        { pct:'20%', color:'#e05555', text:'Very Weak' },
+        { pct:'40%', color:'#e07030', text:'Weak' },
+        { pct:'60%', color:'#c9a84c', text:'Fair' },
+        { pct:'80%', color:'#7ec880', text:'Strong' },
+        { pct:'100%',color:'#4caf50', text:'Very Strong' }
+      ];
+      var lvl = levels[Math.min(score, levels.length) - 1] || levels[0];
+      fill.style.width     = lvl.pct;
+      fill.style.background = lvl.color;
+      label.textContent    = lvl.text;
+      label.style.color    = lvl.color;
+    }
+
+    /* ============================================================
+       VALIDATION HELPERS
+    ============================================================ */
+    function setError(inputId, errId, msg){
+      var inp = document.getElementById(inputId);
+      var err = document.getElementById(errId);
+      if(inp){ inp.classList.add('error'); inp.classList.remove('success'); }
+      if(err){ err.textContent = msg; err.classList.add('show'); }
+      return false;
+    }
+    function setSuccess(inputId, errId){
+      var inp = document.getElementById(inputId);
+      var err = document.getElementById(errId);
+      if(inp){ inp.classList.remove('error'); inp.classList.add('success'); }
+      if(err){ err.classList.remove('show'); }
+      return true;
+    }
+    function clearFieldState(inputId, errId){
+      var inp = document.getElementById(inputId);
+      var err = document.getElementById(errId);
+      if(inp){ inp.classList.remove('error','success'); }
+      if(err){ err.classList.remove('show'); }
+    }
+    function isValidEmail(email){
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+    function showAlert(alertId, type, msg){
+      var el = document.getElementById(alertId);
+      if(!el) return;
+      el.className = 'form-alert ' + type + ' show';
+      el.innerHTML = (type === 'error' ? '&#9888; ' : '&#10003; ') + msg;
+    }
+    function clearAlert(alertId){
+      var el = document.getElementById(alertId);
+      if(el){ el.className = 'form-alert'; el.innerHTML = ''; }
+    }
+
+    /* ============================================================
+       TOAST
+    ============================================================ */
+    function showToast(msg, type){
+      var t = document.getElementById('toast');
+      if(!t) return;
+      t.textContent = msg;
+      t.className = 'toast ' + (type || '') + ' show';
+      setTimeout(function(){ t.className = 'toast ' + (type || ''); }, 3000);
+    }
+
+    /* ============================================================
+       FORGOT PASSWORD
+    ============================================================ */
+    function forgotPassword(e){
+      e.preventDefault();
+      var email = document.getElementById('signinEmail').value.trim();
+      if(!email || !isValidEmail(email)){
+        showAlert('signinAlert','error','Please enter your email address first.');
+        document.getElementById('signinEmail').focus();
+        return;
+      }
+      // Use Firebase if available
+      if(typeof window.swForgotPassword === 'function'){
+        window.swForgotPassword(email)
+          .then(function(){
+            showAlert('signinAlert','success','Password reset email sent! Check your inbox.');
+          })
+          .catch(function(err){
+            var msg = 'Could not send reset email.';
+            if(err.code === 'auth/user-not-found') msg = 'No account found with this email.';
+            showAlert('signinAlert','error', msg);
+          });
+      } else {
+        showAlert('signinAlert','success','Password reset instructions sent to: ' + email);
+      }
+    }
+
+    /* ============================================================
+       SIGN IN
+    ============================================================ */
+    document.addEventListener('DOMContentLoaded', function(){
+
+      var signinForm = document.getElementById('signinForm');
+      if(signinForm){
+        signinForm.addEventListener('submit', function(e){
+          e.preventDefault();
+          clearAlert('signinAlert');
+
+          var email    = document.getElementById('signinEmail').value.trim();
+          var password = document.getElementById('signinPassword').value;
+          var remember = document.getElementById('rememberMe').checked;
+          var valid    = true;
+
+          // Validate email
+          if(!email){
+            setError('signinEmail','signinEmailErr','Email is required');
+            valid = false;
+          } else if(!isValidEmail(email)){
+            setError('signinEmail','signinEmailErr','Please enter a valid email');
+            valid = false;
+          } else {
+            setSuccess('signinEmail','signinEmailErr');
+          }
+
+          // Validate password
+          if(!password){
+            setError('signinPassword','signinPasswordErr','Password is required');
+            valid = false;
+          } else {
+            setSuccess('signinPassword','signinPasswordErr');
+          }
+
+          if(!valid) return;
+
+          // Loading state
+          var btn = document.getElementById('signinBtn');
+          btn.classList.add('loading');
+          btn.disabled = true;
+
+          // Try Firebase Auth first, fallback to localStorage
+          if(typeof window.swLogin === 'function'){
+            window.swLogin(email, password)
+              .then(function(fbUser){
+                btn.classList.remove('loading');
+                btn.disabled = false;
+                var name = fbUser.displayName || email.split('@')[0];
+                var firstName = name.split(' ')[0];
+                showToast('Welcome back, ' + firstName + '! Redirecting…', 'success');
+                var redirect = new URLSearchParams(window.location.search).get('redirect') || 'index.html';
+                setTimeout(function(){ window.location.href = redirect; }, 1200);
+              })
+              .catch(function(err){
+                btn.classList.remove('loading');
+                btn.disabled = false;
+                var msg = 'Sign in failed. Please try again.';
+                if(err.code === 'auth/user-not-found')    msg = 'No account found with this email.';
+                if(err.code === 'auth/wrong-password')    msg = 'Incorrect password. Please try again.';
+                if(err.code === 'auth/invalid-email')     msg = 'Please enter a valid email address.';
+                if(err.code === 'auth/too-many-requests') msg = 'Too many attempts. Please try again later.';
+                if(err.code === 'auth/invalid-credential') msg = 'Invalid email or password.';
+                showAlert('signinAlert','error', msg);
+              });
+          } else {
+            // localStorage fallback
+            setTimeout(function(){
+              btn.classList.remove('loading');
+              btn.disabled = false;
+              var users = JSON.parse(localStorage.getItem('solowaveUsers') || '[]');
+              var user  = users.find(function(u){ return u.email.toLowerCase() === email.toLowerCase(); });
+              if(!user){
+                showAlert('signinAlert','error','No account found with this email address.');
+                setError('signinEmail','signinEmailErr','Email not registered');
+                return;
+              }
+              if(user.password !== btoa(password)){
+                showAlert('signinAlert','error','Incorrect password. Please try again.');
+                setError('signinPassword','signinPasswordErr','Wrong password');
+                return;
+              }
+              var sessionUser = { id:user.id, name:user.name, firstName:user.firstName, lastName:user.lastName, email:user.email, phone:user.phone, createdAt:user.createdAt, orders:user.orders||[], isLoggedIn:true };
+              localStorage.setItem('solowaveCurrentUser', JSON.stringify(sessionUser));
+              showToast('Welcome back, ' + user.firstName + '! Redirecting…', 'success');
+              var redirect = new URLSearchParams(window.location.search).get('redirect') || 'index.html';
+              setTimeout(function(){ window.location.href = redirect; }, 1200);
+            }, 800);
+          }
+        });
+      }
+
+      /* ============================================================
+         REGISTER
+      ============================================================ */
+      var registerForm = document.getElementById('registerForm');
+      if(registerForm){
+        registerForm.addEventListener('submit', function(e){
+          e.preventDefault();
+          clearAlert('registerAlert');
+
+          var firstName = document.getElementById('regFirstName').value.trim();
+          var lastName  = document.getElementById('regLastName').value.trim();
+          var email     = document.getElementById('regEmail').value.trim();
+          var phone     = document.getElementById('regPhone').value.trim();
+          var password  = document.getElementById('regPassword').value;
+          var confirm   = document.getElementById('regConfirm').value;
+          var valid     = true;
+
+          // First name
+          if(!firstName){
+            setError('regFirstName','regFirstNameErr','First name is required');
+            valid = false;
+          } else { setSuccess('regFirstName','regFirstNameErr'); }
+
+          // Last name
+          if(!lastName){
+            setError('regLastName','regLastNameErr','Last name is required');
+            valid = false;
+          } else { setSuccess('regLastName','regLastNameErr'); }
+
+          // Email
+          if(!email){
+            setError('regEmail','regEmailErr','Email is required');
+            valid = false;
+          } else if(!isValidEmail(email)){
+            setError('regEmail','regEmailErr','Please enter a valid email');
+            valid = false;
+          } else { setSuccess('regEmail','regEmailErr'); }
+
+          // Phone
+          if(!phone){
+            setError('regPhone','regPhoneErr','Phone number is required');
+            valid = false;
+          } else { setSuccess('regPhone','regPhoneErr'); }
+
+          // Password
+          if(!password){
+            setError('regPassword','regPasswordErr','Password is required');
+            valid = false;
+          } else if(password.length < 6){
+            setError('regPassword','regPasswordErr','Password must be at least 6 characters');
+            valid = false;
+          } else { setSuccess('regPassword','regPasswordErr'); }
+
+          // Confirm
+          if(!confirm){
+            setError('regConfirm','regConfirmErr','Please confirm your password');
+            valid = false;
+          } else if(confirm !== password){
+            setError('regConfirm','regConfirmErr','Passwords do not match');
+            valid = false;
+          } else { setSuccess('regConfirm','regConfirmErr'); }
+
+          if(!valid) return;
+
+          // Loading
+          var btn = document.getElementById('registerBtn');
+          btn.classList.add('loading');
+          btn.disabled = true;
+
+          // Try Firebase Auth first, fallback to localStorage
+          if(typeof window.swRegister === 'function'){
+            window.swRegister({ firstName:firstName, lastName:lastName, email:email, phone:phone, password:password })
+              .then(function(fbUser){
+                btn.classList.remove('loading');
+                btn.disabled = false;
+                showToast('Account created! Welcome, ' + firstName + '!', 'success');
+                var redirect = new URLSearchParams(window.location.search).get('redirect') || 'index.html';
+                setTimeout(function(){ window.location.href = redirect; }, 1400);
+              })
+              .catch(function(err){
+                btn.classList.remove('loading');
+                btn.disabled = false;
+                var msg = 'Registration failed. Please try again.';
+                if(err.code === 'auth/email-already-in-use') msg = 'An account with this email already exists.';
+                if(err.code === 'auth/weak-password')        msg = 'Password is too weak. Use at least 6 characters.';
+                if(err.code === 'auth/invalid-email')        msg = 'Please enter a valid email address.';
+                showAlert('registerAlert','error', msg);
+              });
+          } else {
+            // localStorage fallback
+            setTimeout(function(){
+              btn.classList.remove('loading');
+              btn.disabled = false;
+              var users = JSON.parse(localStorage.getItem('solowaveUsers') || '[]');
+              var exists = users.some(function(u){ return u.email.toLowerCase() === email.toLowerCase(); });
+              if(exists){
+                showAlert('registerAlert','error','An account with this email already exists.');
+                setError('regEmail','regEmailErr','Email already registered');
+                return;
+              }
+              var newUser = { id:'SW-'+Date.now().toString(36).toUpperCase(), name:firstName+' '+lastName, firstName:firstName, lastName:lastName, email:email, phone:phone, password:btoa(password), createdAt:new Date().toISOString(), orders:[], isLoggedIn:true };
+              users.push(newUser);
+              localStorage.setItem('solowaveUsers', JSON.stringify(users));
+              var sessionUser = { id:newUser.id, name:newUser.name, firstName:newUser.firstName, lastName:newUser.lastName, email:newUser.email, phone:newUser.phone, createdAt:newUser.createdAt, orders:[], isLoggedIn:true };
+              localStorage.setItem('solowaveCurrentUser', JSON.stringify(sessionUser));
+              showToast('Account created! Welcome, ' + firstName + '!', 'success');
+              var redirect = new URLSearchParams(window.location.search).get('redirect') || 'index.html';
+              setTimeout(function(){ window.location.href = redirect; }, 1400);
+            }, 900);
+          }
+        });
+      }
+
+      /* Live clear errors on input */
+      ['signinEmail','signinPassword'].forEach(function(id){
+        var el = document.getElementById(id);
+        if(el) el.addEventListener('input', function(){
+          el.classList.remove('error');
+          clearAlert('signinAlert');
+        });
+      });
+      ['regFirstName','regLastName','regEmail','regPhone','regPassword','regConfirm'].forEach(function(id){
+        var el = document.getElementById(id);
+        if(el) el.addEventListener('input', function(){
+          el.classList.remove('error');
+          clearAlert('registerAlert');
+        });
+      });
+
+    }); // DOMContentLoaded
+  </script>
+<script src="fullstack.js"></script>
+</body>
+</html>

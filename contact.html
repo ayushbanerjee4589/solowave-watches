@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact — Solowave Watches</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@200;300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="luxury-ui.css" />
+  <script type="module" src="firebase.js"></script>
+  <style>
+    /* ── Contact Page Styles ── */
+    .contact-hero {
+      min-height: 38vh;
+      background: linear-gradient(135deg, #050505 0%, #111 50%, #0a0a0a 100%);
+      display: flex; align-items: flex-end; justify-content: center;
+      padding: 0 40px 60px;
+      position: relative; overflow: hidden;
+      border-bottom: 1px solid rgba(201,168,76,0.12);
+    }
+    .contact-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 50% 100%, rgba(201,168,76,0.07), transparent 70%);
+    }
+    .contact-hero-inner { text-align: center; position: relative; z-index: 1; }
+    .contact-eyebrow { font-size: 0.62rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; }
+    .contact-title { font-family: 'Playfair Display', serif; font-size: clamp(2.4rem,5vw,4rem); font-weight: 700; color: var(--text); margin-bottom: 14px; }
+    .contact-sub { font-size: 0.9rem; color: var(--text-muted); max-width: 480px; margin: 0 auto; line-height: 1.7; }
+
+    /* ── Main grid ── */
+    .contact-main { max-width: 1100px; margin: 0 auto; padding: 80px 40px; display: grid; grid-template-columns: 1fr 1.4fr; gap: 60px; align-items: start; }
+
+    /* ── Info column ── */
+    .contact-info-col h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--text); margin-bottom: 8px; }
+    .contact-info-col p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 36px; }
+    .contact-cards { display: flex; flex-direction: column; gap: 16px; }
+    .contact-card {
+      display: flex; align-items: flex-start; gap: 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(201,168,76,0.12);
+      border-radius: 14px; padding: 20px 22px;
+      transition: border-color 0.3s ease, background 0.3s ease;
+    }
+    .contact-card:hover { border-color: rgba(201,168,76,0.3); background: rgba(201,168,76,0.04); }
+    .cc-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+    .cc-label { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
+    .cc-val { font-size: 0.88rem; color: var(--text); font-weight: 400; }
+    .cc-sub { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+
+    /* Social row */
+    .contact-social { margin-top: 32px; }
+    .contact-social-label { font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 14px; }
+    .social-row { display: flex; gap: 12px; }
+    .social-btn {
+      width: 40px; height: 40px; border-radius: 50%;
+      border: 1px solid rgba(201,168,76,0.2);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted); font-size: 0.75rem; font-weight: 600;
+      transition: all 0.25s ease; cursor: pointer; text-decoration: none;
+    }
+    .social-btn:hover { border-color: var(--gold); color: var(--gold); background: rgba(201,168,76,0.08); }
+
+    /* ── Form column ── */
+    .contact-form-col {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(201,168,76,0.12);
+      border-radius: 20px; padding: 40px;
+    }
+    .cf-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--text); margin-bottom: 6px; }
+    .cf-sub { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 28px; }
+    .cf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .cf-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+    .cf-group label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); }
+    .cf-group input,
+    .cf-group select,
+    .cf-group textarea {
+      padding: 11px 14px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(201,168,76,0.15);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.82rem; font-weight: 300;
+      outline: none;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      resize: vertical;
+    }
+    .cf-group input::placeholder,
+    .cf-group textarea::placeholder { color: var(--text-dim); }
+    .cf-group input:focus,
+    .cf-group select:focus,
+    .cf-group textarea:focus {
+      border-color: rgba(201,168,76,0.45);
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.07);
+    }
+    .cf-group select option { background: #1a1a1a; }
+    .cf-group textarea { min-height: 110px; }
+    .btn-cf-submit {
+      width: 100%; padding: 14px;
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-light));
+      color: var(--black); border: none; border-radius: 8px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.2em;
+      text-transform: uppercase; cursor: pointer;
+      transition: all 0.3s ease; margin-top: 4px;
+    }
+    .btn-cf-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(201,168,76,0.3); }
+    .cf-success {
+      display: none; text-align: center; padding: 24px 0;
+    }
+    .cf-success-icon { font-size: 48px; margin-bottom: 12px; }
+    .cf-success-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--text); margin-bottom: 8px; }
+    .cf-success-sub { font-size: 0.82rem; color: var(--text-muted); }
+
+    /* ── Map placeholder ── */
+    .contact-map {
+      max-width: 1100px; margin: 0 auto 80px; padding: 0 40px;
+    }
+    .map-box {
+      height: 260px; border-radius: 16px;
+      background: linear-gradient(135deg, #111 0%, #1a1a1a 100%);
+      border: 1px solid rgba(201,168,76,0.12);
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 12px; color: var(--text-muted);
+      position: relative; overflow: hidden;
+    }
+    .map-box::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(201,168,76,0.04) 39px, rgba(201,168,76,0.04) 40px),
+        repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(201,168,76,0.04) 39px, rgba(201,168,76,0.04) 40px);
+    }
+    .map-pin { font-size: 36px; position: relative; z-index: 1; }
+    .map-label { font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); position: relative; z-index: 1; }
+    .map-addr { font-size: 0.72rem; color: var(--text-dim); position: relative; z-index: 1; }
+
+    /* Day mode */
+    body.day-mode .contact-hero { background: linear-gradient(135deg, #f0ece4, #e8e2d8); }
+    body.day-mode .contact-card { background: rgba(255,255,255,0.6); border-color: rgba(160,120,48,0.15); }
+    body.day-mode .contact-card:hover { background: rgba(255,255,255,0.85); border-color: rgba(160,120,48,0.3); }
+    body.day-mode .contact-form-col { background: rgba(255,255,255,0.6); border-color: rgba(160,120,48,0.15); }
+    body.day-mode .cf-group input,
+    body.day-mode .cf-group select,
+    body.day-mode .cf-group textarea { background: rgba(255,255,255,0.8); border-color: rgba(160,120,48,0.2); color: var(--text); }
+    body.day-mode .map-box { background: #e8e2d8; border-color: rgba(160,120,48,0.15); }
+
+    @media(max-width:768px){
+      .contact-main { grid-template-columns: 1fr; padding: 48px 20px; gap: 40px; }
+      .cf-row { grid-template-columns: 1fr; }
+      .contact-form-col { padding: 28px 20px; }
+      .contact-map { padding: 0 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar scrolled" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">SOLOWAVE</a>
+      <ul class="nav-links">
+        <li><a href="index.html#collection">Collection</a></li>
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#categories">Categories</a></li>
+        <li><a href="contact.html" style="color:var(--gold)">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="cart-btn" id="cartBtn" onclick="alert('Please visit the main page to access your cart.')">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="contact-hero">
+    <div class="contact-hero-inner">
+      <div class="contact-eyebrow">Get in Touch</div>
+      <h1 class="contact-title">Contact Solowave</h1>
+      <p class="contact-sub">Our concierge team is available to assist you with bespoke orders, servicing, and any enquiries about our timepieces.</p>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="contact-main">
+
+    <!-- LEFT: Info -->
+    <div class="contact-info-col">
+      <h2>We'd love to hear from you</h2>
+      <p>Whether you're enquiring about a specific timepiece, need after-sales support, or wish to commission a bespoke creation — our team responds within 24 hours.</p>
+
+      <div class="contact-cards">
+        <div class="contact-card">
+          <div class="cc-icon">📍</div>
+          <div>
+            <div class="cc-label">Atelier</div>
+            <div class="cc-val">Rue de la Paix 12, Geneva</div>
+            <div class="cc-sub">Switzerland — CH-1204</div>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="cc-icon">✉️</div>
+          <div>
+            <div class="cc-label">Email</div>
+            <div class="cc-val">solowave.watches@gmail.com</div>
+            <div class="cc-sub">Response within 24 hours</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-social">
+        <div class="contact-social-label">Follow Us</div>
+        <div class="social-row">
+          <a class="social-btn" href="#" title="Instagram">IG</a>
+          <a class="social-btn" href="#" title="Twitter / X">𝕏</a>
+          <a class="social-btn" href="#" title="Facebook">FB</a>
+          <a class="social-btn" href="#" title="YouTube">YT</a>
+          <a class="social-btn" href="#" title="LinkedIn">in</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Form -->
+    <div class="contact-form-col">
+      <div id="cfForm">
+        <div class="cf-title">Send a Message</div>
+        <div class="cf-sub">Fill in the form and our concierge will get back to you shortly.</div>
+
+        <div class="cf-row">
+          <div class="cf-group">
+            <label>First Name *</label>
+            <input type="text" id="cfFirst" placeholder="Ayush" />
+          </div>
+          <div class="cf-group">
+            <label>Last Name</label>
+            <input type="text" id="cfLast" placeholder="Kumar" />
+          </div>
+        </div>
+        <div class="cf-group">
+          <label>Email Address *</label>
+          <input type="email" id="cfEmail" placeholder="ayush@example.com" />
+        </div>
+        <div class="cf-group">
+          <label>Phone</label>
+          <input type="tel" id="cfPhone" placeholder="Your phone number (optional)" />
+        </div>
+        <div class="cf-group">
+          <label>Subject *</label>
+          <select id="cfSubject">
+            <option value="">Select a topic…</option>
+            <option>Product Enquiry</option>
+            <option>Bespoke / Custom Order</option>
+            <option>After-Sales Service</option>
+            <option>Order Status</option>
+            <option>Returns & Refunds</option>
+            <option>Press & Media</option>
+            <option>Partnership</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="cf-group">
+          <label>Message *</label>
+          <textarea id="cfMessage" placeholder="Tell us how we can help you…"></textarea>
+        </div>
+        <button class="btn-cf-submit" onclick="submitContactForm()">Send Message</button>
+      </div>
+
+      <!-- Success state -->
+      <div class="cf-success" id="cfSuccess">
+        <div class="cf-success-icon">✉️</div>
+        <div class="cf-success-title">Message Sent!</div>
+        <div class="cf-success-sub">Thank you for reaching out. Our concierge team will respond within 24 hours.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MAP -->
+  <div class="contact-map">
+    <div class="map-box">
+      <div class="map-pin">📍</div>
+      <div class="map-label">Solowave Atelier</div>
+      <div class="map-addr">Rue de la Paix 12, Geneva, Switzerland</div>
+    </div>
+  </div>
+
+  <script>
+    // Navbar scroll
+    window.addEventListener('scroll', function(){
+      var nb = document.getElementById('navbar');
+      if(nb) nb.classList.toggle('scrolled', window.scrollY > 10);
+    });
+
+    // Theme (sync with main site)
+    (function(){
+      var saved = localStorage.getItem('solowaveTheme');
+      if(!saved){
+        saved = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'night' : 'day';
+      }
+      if(saved === 'day') document.body.classList.add('day-mode');
+    })();
+
+    // Form submit
+    function submitContactForm(){
+      var first   = document.getElementById('cfFirst').value.trim();
+      var email   = document.getElementById('cfEmail').value.trim();
+      var subject = document.getElementById('cfSubject').value;
+      var message = document.getElementById('cfMessage').value.trim();
+
+      if(!first)  { document.getElementById('cfFirst').focus();   alert('Please enter your name.'); return; }
+      if(!email || !email.includes('@')) { document.getElementById('cfEmail').focus(); alert('Please enter a valid email.'); return; }
+      if(!subject){ document.getElementById('cfSubject').focus(); alert('Please select a subject.'); return; }
+      if(!message){ document.getElementById('cfMessage').focus(); alert('Please enter your message.'); return; }
+
+      // Save to Firebase + localStorage
+      var msgObj = {
+        name: first + ' ' + document.getElementById('cfLast').value,
+        email: email,
+        phone: document.getElementById('cfPhone').value,
+        subject: subject,
+        message: message,
+        date: Date.now()
+      };
+      if(typeof window.swSaveMessage === 'function'){
+        window.swSaveMessage(msgObj);
+      } else {
+        var msgs = JSON.parse(localStorage.getItem('solowaveMessages') || '[]');
+        msgs.unshift(msgObj);
+        localStorage.setItem('solowaveMessages', JSON.stringify(msgs));
+      }
+
+      // Show success
+      document.getElementById('cfForm').style.display = 'none';
+      document.getElementById('cfSuccess').style.display = 'block';
+    }
+  </script>
+<script src="fullstack.js"></script>
+</body>
+</html>

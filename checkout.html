@@ -1,0 +1,367 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Solowave — Secure Checkout</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Razorpay SDK -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <link rel="stylesheet" href="checkout.css" />
+  <link rel="stylesheet" href="responsive.css" />
+  <link rel="stylesheet" href="luxury-ui.css" />
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="db.js"></script>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="co-nav">
+    <a href="index.html" class="co-logo">SOLOWAVE</a>
+    <div class="co-nav-steps">
+      <span class="step done">Cart</span>
+      <span class="step-sep">›</span>
+      <span class="step active">Checkout</span>
+      <span class="step-sep">›</span>
+      <span class="step">Confirmation</span>
+    </div>
+    <div class="co-secure"><span class="lock">🔒</span> Secure Checkout</div>
+  </nav>
+
+  <main class="co-main">
+    <div class="co-grid">
+
+      <!-- LEFT: PAYMENT FORM -->
+      <div class="co-left">
+
+        <!-- CONTACT -->
+        <div class="co-section">
+          <h2 class="co-section-title">Contact Information</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label>First Name</label>
+              <input type="text" id="firstName" placeholder="Ayush" />
+            </div>
+            <div class="form-group">
+              <label>Last Name</label>
+              <input type="text" id="lastName" placeholder="Kumar" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="email" placeholder="your@email.com" />
+          </div>
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="tel" id="phone" placeholder="Your phone number" />
+          </div>
+        </div>
+
+        <!-- SHIPPING -->
+        <div class="co-section">
+          <h2 class="co-section-title">Shipping Address</h2>
+          <div class="form-group">
+            <label>Address Line 1</label>
+            <input type="text" id="addr1" placeholder="House / Flat / Street" />
+          </div>
+          <div class="form-group">
+            <label>Address Line 2 (Optional)</label>
+            <input type="text" id="addr2" placeholder="Area / Landmark" />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>City</label>
+              <input type="text" id="city" placeholder="Jamshedpur" />
+            </div>
+            <div class="form-group">
+              <label>PIN Code</label>
+              <input type="text" id="pin" placeholder="831001" maxlength="6" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>State</label>
+              <input type="text" id="state" placeholder="Jharkhand" />
+            </div>
+            <div class="form-group">
+              <label>Country</label>
+              <select id="country">
+                <option value="IN" selected>India</option>
+                <option value="US">United States</option>
+                <option value="GB">United Kingdom</option>
+                <option value="AE">UAE</option>
+                <option value="SG">Singapore</option>
+                <option value="AU">Australia</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAYMENT METHOD -->
+        <div class="co-section">
+          <h2 class="co-section-title">Payment Method</h2>
+
+          <div class="payment-methods">
+
+            <!-- Razorpay -->
+            <div class="pay-option active" id="opt-razorpay" onclick="selectPayment('razorpay')">
+              <div class="pay-radio"><span class="radio-dot"></span></div>
+              <div class="pay-icon razorpay-icon">
+                <svg width="28" height="28" viewBox="0 0 40 40" fill="none">
+                  <rect width="40" height="40" rx="8" fill="#072654"/>
+                  <path d="M8 28L16 12L22 22L26 16L32 28H8Z" fill="#3395FF"/>
+                </svg>
+              </div>
+              <div class="pay-info">
+                <div class="pay-name">Razorpay</div>
+                <div class="pay-desc">UPI, Cards, Net Banking, Wallets</div>
+              </div>
+              <div class="pay-badges">
+                <span class="badge">UPI</span>
+                <span class="badge">Cards</span>
+                <span class="badge">EMI</span>
+              </div>
+            </div>
+
+            <!-- Paytm -->
+            <div class="pay-option" id="opt-paytm" onclick="selectPayment('paytm')">
+              <div class="pay-radio"><span class="radio-dot"></span></div>
+              <div class="pay-icon paytm-icon">
+                <svg width="28" height="28" viewBox="0 0 40 40" fill="none">
+                  <rect width="40" height="40" rx="8" fill="#002970"/>
+                  <text x="4" y="26" font-size="14" font-weight="bold" fill="#00BAF2">Pay</text>
+                  <text x="4" y="36" font-size="10" fill="#ffffff">tm</text>
+                </svg>
+              </div>
+              <div class="pay-info">
+                <div class="pay-name">Paytm</div>
+                <div class="pay-desc">Paytm Wallet, UPI, Cards</div>
+              </div>
+              <div class="pay-badges">
+                <span class="badge">Wallet</span>
+                <span class="badge">UPI</span>
+              </div>
+            </div>
+
+            <!-- PayPal -->
+            <div class="pay-option" id="opt-paypal" onclick="selectPayment('paypal')">
+              <div class="pay-radio"><span class="radio-dot"></span></div>
+              <div class="pay-icon paypal-icon">
+                <svg width="28" height="28" viewBox="0 0 40 40" fill="none">
+                  <rect width="40" height="40" rx="8" fill="#003087"/>
+                  <path d="M10 10h12c4 0 7 2 6 7-1 4-4 6-8 6H16l-2 9H10L14 10z" fill="#009CDE"/>
+                  <path d="M14 14h10c3 0 5 1.5 4.5 5-0.5 3-3 5-6 5H18l-1.5 7H13L14 14z" fill="#ffffff" opacity="0.3"/>
+                </svg>
+              </div>
+              <div class="pay-info">
+                <div class="pay-name">PayPal</div>
+                <div class="pay-desc">International payments</div>
+              </div>
+              <div class="pay-badges">
+                <span class="badge">Global</span>
+              </div>
+            </div>
+
+            <!-- Card Payment -->
+            <div class="pay-option" id="opt-card" onclick="selectPayment('card')">
+              <div class="pay-radio"><span class="radio-dot"></span></div>
+              <div class="pay-icon card-icon">
+                <svg width="28" height="28" viewBox="0 0 40 40" fill="none">
+                  <rect width="40" height="40" rx="8" fill="#1a1a2e"/>
+                  <rect x="4" y="10" width="32" height="20" rx="3" fill="#c9a84c"/>
+                  <rect x="4" y="16" width="32" height="6" fill="#8a6520"/>
+                  <rect x="8" y="24" width="10" height="3" rx="1" fill="#fff" opacity="0.7"/>
+                </svg>
+              </div>
+              <div class="pay-info">
+                <div class="pay-name">Credit / Debit Card</div>
+                <div class="pay-desc">Visa, Mastercard, RuPay, Amex</div>
+              </div>
+              <div class="pay-badges">
+                <span class="badge">Visa</span>
+                <span class="badge">MC</span>
+                <span class="badge">RuPay</span>
+              </div>
+            </div>
+
+            <!-- UPI Direct -->
+            <div class="pay-option" id="opt-upi" onclick="selectPayment('upi')">
+              <div class="pay-radio"><span class="radio-dot"></span></div>
+              <div class="pay-icon upi-icon">
+                <svg width="28" height="28" viewBox="0 0 40 40" fill="none">
+                  <rect width="40" height="40" rx="8" fill="#ffffff"/>
+                  <text x="4" y="26" font-size="13" font-weight="900" fill="#097939">UPI</text>
+                </svg>
+              </div>
+              <div class="pay-info">
+                <div class="pay-name">UPI Direct</div>
+                <div class="pay-desc">GPay, PhonePe, BHIM, any UPI app</div>
+              </div>
+              <div class="pay-badges">
+                <span class="badge">Instant</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- CARD FORM (shown when card selected) -->
+          <div class="card-form" id="cardForm">
+            <div class="card-preview" id="cardPreview">
+              <div class="card-preview-chip"></div>
+              <div class="card-preview-number" id="previewNumber">•••• •••• •••• ••••</div>
+              <div class="card-preview-bottom">
+                <div>
+                  <div class="card-preview-label">Card Holder</div>
+                  <div class="card-preview-value" id="previewName">YOUR NAME</div>
+                </div>
+                <div>
+                  <div class="card-preview-label">Expires</div>
+                  <div class="card-preview-value" id="previewExpiry">MM/YY</div>
+                </div>
+                <div class="card-network-logo" id="cardNetworkLogo">
+                  <svg width="40" height="25" viewBox="0 0 50 30"><circle cx="18" cy="15" r="12" fill="#EB001B" opacity="0.9"/><circle cx="32" cy="15" r="12" fill="#F79E1B" opacity="0.9"/></svg>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Card Number</label>
+              <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCardNumber(this)" />
+            </div>
+            <div class="form-group">
+              <label>Name on Card</label>
+              <input type="text" id="cardName" placeholder="AYUSH KUMAR" oninput="updateCardPreview()" />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Expiry Date</label>
+                <input type="text" id="cardExpiry" placeholder="MM/YY" maxlength="5" oninput="formatExpiry(this)" />
+              </div>
+              <div class="form-group">
+                <label>CVV</label>
+                <input type="password" id="cardCvv" placeholder="•••" maxlength="4" />
+                <span class="cvv-hint">3-4 digits on back</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- UPI FORM -->
+          <div class="upi-form" id="upiForm">
+            <div class="form-group">
+              <label>UPI ID</label>
+              <input type="text" id="upiId" placeholder="yourname@upi" />
+              <span class="upi-hint">e.g. 9876543210@paytm or name@okaxis</span>
+            </div>
+            <div class="upi-apps">
+              <div class="upi-app" onclick="setUpiApp('gpay')">
+                <div class="upi-app-icon gpay">G</div>
+                <span>GPay</span>
+              </div>
+              <div class="upi-app" onclick="setUpiApp('phonepe')">
+                <div class="upi-app-icon phonepe">P</div>
+                <span>PhonePe</span>
+              </div>
+              <div class="upi-app" onclick="setUpiApp('paytm')">
+                <div class="upi-app-icon paytmupi">₹</div>
+                <span>Paytm</span>
+              </div>
+              <div class="upi-app" onclick="setUpiApp('bhim')">
+                <div class="upi-app-icon bhim">B</div>
+                <span>BHIM</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- PLACE ORDER BUTTON -->
+        <button class="btn-place-order" id="btnPlaceOrder" onclick="placeOrder()">
+          <span id="btnText">Place Order Securely</span>
+          <span class="btn-lock">🔒</span>
+        </button>
+
+        <div class="co-trust-row">
+          <span>🛡 SSL Encrypted</span>
+          <span>🔒 PCI DSS Compliant</span>
+          <span>↩ 30-Day Returns</span>
+          <span>✈ Free Shipping</span>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: ORDER SUMMARY -->
+      <div class="co-right">
+        <div class="order-summary">
+          <h2 class="co-section-title">Order Summary</h2>
+          <div class="order-items" id="orderItems">
+            <!-- filled by JS -->
+          </div>
+          <div class="order-divider"></div>
+          <div class="order-row"><span>Subtotal</span><span id="sumSubtotal">—</span></div>
+          <div class="order-row"><span>Shipping</span><span class="free-ship">FREE</span></div>
+          <div class="order-row"><span>Tax (8%)</span><span id="sumTax">—</span></div>
+          <div class="order-divider"></div>
+          <div class="order-row total-row">
+            <span>Total</span>
+            <span id="sumTotal" class="total-amount">—</span>
+          </div>
+          <div class="order-note">
+            <span>🎁</span>
+            <span>Complimentary gift packaging & certificate of authenticity included</span>
+          </div>
+        </div>
+
+        <!-- PROMO CODE -->
+        <div class="promo-section">
+          <h3 class="promo-title">Promo Code</h3>
+          <div class="promo-row">
+            <input type="text" id="promoInput" placeholder="Enter code (SOLOWAVE10)" class="promo-input" />
+            <button class="btn-promo" onclick="applyPromo()">Apply</button>
+          </div>
+          <div class="promo-msg" id="promoMsg"></div>
+        </div>
+
+        <!-- PAYMENT SECURITY -->
+        <div class="security-badges">
+          <div class="sec-badge">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span>256-bit SSL</span>
+          </div>
+          <div class="sec-badge">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            <span>Secure Payment</span>
+          </div>
+          <div class="sec-badge">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Verified Seller</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- SUCCESS MODAL -->
+  <div class="success-modal" id="successModal">
+    <div class="success-inner">
+      <div class="success-anim">
+        <div class="success-circle">
+          <svg width="60" height="60" viewBox="0 0 60 60">
+            <circle cx="30" cy="30" r="28" fill="none" stroke="#3a8a3a" stroke-width="3" stroke-dasharray="176" stroke-dashoffset="176" id="successCircle"/>
+            <polyline points="18,30 26,38 42,22" fill="none" stroke="#3a8a3a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="40" stroke-dashoffset="40" id="successCheck"/>
+          </svg>
+        </div>
+      </div>
+      <h2 class="success-title">Payment Successful!</h2>
+      <p class="success-sub">Your Solowave timepiece is confirmed. A concierge will contact you within 24 hours.</p>
+      <div class="success-order-id" id="successOrderId"></div>
+      <div class="success-details" id="successDetails"></div>
+      <button class="btn-success-home" onclick="window.location.href='index.html'">Back to Collection</button>
+    </div>
+  </div>
+
+  <script src="watches-data.js"></script>
+  <script src="checkout.js"></script>
+<script src="fullstack.js"></script>
+</body>
+</html>

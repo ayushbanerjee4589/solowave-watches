@@ -1,0 +1,328 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Wishlist — Solowave Watches</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@200;300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --gold:#c9a84c; --gold-light:#e8c96d; --gold-dark:#a07830;
+      --black:#0a0a0a; --dark:#111; --dark-2:#1a1a1a; --dark-3:#242424;
+      --text:#e8e8e8; --text-muted:#888; --text-dim:#555;
+      --glass:rgba(255,255,255,0.03); --glass-border:rgba(201,168,76,0.15);
+      --radius:12px; --radius-lg:20px;
+      --transition:all 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    body.day-mode {
+      --black:#f0ece4; --dark:#e8e2d8; --dark-2:#ddd7cc; --dark-3:#d4cdc0;
+      --text:#1a1410; --text-muted:#5a4e3a; --text-dim:#8a7a60;
+      --glass:rgba(0,0,0,0.04); --glass-border:rgba(160,120,48,0.2);
+    }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--black);color:var(--text);font-family:'Montserrat',sans-serif;font-weight:300;line-height:1.7;transition:background 0.4s,color 0.4s;}
+    a{text-decoration:none;color:inherit;}
+    button{cursor:pointer;border:none;background:none;font-family:inherit;}
+    img{max-width:100%;display:block;}
+    ::-webkit-scrollbar{width:4px;}
+    ::-webkit-scrollbar-track{background:var(--dark);}
+    ::-webkit-scrollbar-thumb{background:var(--gold-dark);border-radius:2px;}
+
+    /* NAVBAR */
+    .navbar{position:fixed;top:0;left:0;right:0;z-index:1000;padding:18px 0;background:rgba(10,10,10,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border);transition:var(--transition);}
+    body.day-mode .navbar{background:rgba(240,236,228,0.92);}
+    .nav-container{max-width:1280px;margin:0 auto;padding:0 40px;display:flex;align-items:center;justify-content:space-between;}
+    .nav-logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;letter-spacing:0.3em;color:var(--gold);}
+    .nav-links{display:flex;gap:32px;align-items:center;}
+    .nav-links a{font-size:0.68rem;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-muted);transition:color 0.2s;}
+    .nav-links a:hover{color:var(--gold);}
+    .nav-cart{position:relative;color:var(--text-muted);transition:color 0.2s;display:flex;align-items:center;}
+    .nav-cart:hover{color:var(--gold);}
+    .cart-badge{position:absolute;top:-8px;right:-8px;background:var(--gold);color:var(--black);font-size:0.55rem;font-weight:700;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(0);transition:all 0.2s;}
+    .cart-badge.visible{opacity:1;transform:scale(1);}
+
+    /* HERO */
+    .page-hero{padding:120px 40px 60px;text-align:center;border-bottom:1px solid var(--glass-border);background:linear-gradient(to bottom,rgba(201,168,76,0.04),transparent);}
+    .page-eyebrow{font-size:0.6rem;letter-spacing:0.4em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+    .page-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;color:var(--text);margin-bottom:8px;}
+    .page-count{font-size:0.8rem;color:var(--text-muted);}
+
+    /* TOOLBAR */
+    .toolbar{max-width:1280px;margin:0 auto;padding:28px 40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+    .toolbar-left{display:flex;align-items:center;gap:12px;}
+    .toolbar-right{display:flex;align-items:center;gap:12px;}
+    .sort-select{padding:9px 14px;background:var(--dark-2);border:1px solid var(--glass-border);border-radius:8px;color:var(--text);font-family:'Montserrat',sans-serif;font-size:0.72rem;outline:none;cursor:pointer;transition:border-color 0.2s;}
+    .sort-select:focus{border-color:var(--gold);}
+    .sort-select option{background:var(--dark-2);}
+    .btn-toolbar{display:flex;align-items:center;gap:8px;padding:9px 18px;border-radius:8px;font-family:'Montserrat',sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;transition:var(--transition);}
+    .btn-add-all{background:linear-gradient(135deg,var(--gold-dark),var(--gold));color:var(--black);}
+    .btn-add-all:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(201,168,76,0.3);}
+    .btn-clear{border:1px solid rgba(224,85,85,0.3);color:#e05555;}
+    .btn-clear:hover{background:rgba(224,85,85,0.1);border-color:#e05555;}
+
+    /* GRID */
+    .wishlist-container{max-width:1280px;margin:0 auto;padding:0 40px 80px;}
+    .wishlist-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+
+    /* CARD */
+    .wish-card{background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius-lg);overflow:hidden;transition:var(--transition);position:relative;}
+    .wish-card:hover{transform:translateY(-6px);border-color:rgba(201,168,76,0.35);box-shadow:0 20px 60px rgba(0,0,0,0.4);}
+    .wish-card.removing{animation:cardOut 0.35s ease forwards;}
+    @keyframes cardOut{to{opacity:0;transform:scale(0.9) translateY(10px);}}
+    .wish-img-wrap{height:200px;overflow:hidden;position:relative;}
+    .wish-img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s ease;}
+    .wish-card:hover .wish-img{transform:scale(1.06);}
+    .wish-remove{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;background:rgba(10,10,10,0.75);backdrop-filter:blur(8px);border:1px solid rgba(224,85,85,0.4);color:#e05555;display:flex;align-items:center;justify-content:center;transition:all 0.2s;z-index:2;}
+    .wish-remove:hover{background:rgba(224,85,85,0.2);transform:scale(1.1);}
+    .wish-badge{position:absolute;top:12px;left:12px;padding:3px 10px;border-radius:20px;font-size:0.55rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;background:rgba(201,168,76,0.2);color:var(--gold);border:1px solid rgba(201,168,76,0.3);}
+    .wish-info{padding:20px;}
+    .wish-series{font-size:0.58rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);margin-bottom:5px;}
+    .wish-name{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:6px;}
+    .wish-price{font-size:1rem;font-weight:600;color:var(--gold);margin-bottom:16px;}
+    .wish-actions{display:flex;gap:8px;}
+    .btn-wish-cart{flex:1;padding:10px;background:linear-gradient(135deg,var(--gold-dark),var(--gold));color:var(--black);border-radius:6px;font-family:'Montserrat',sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;transition:var(--transition);}
+    .btn-wish-cart:hover{background:linear-gradient(135deg,var(--gold),var(--gold-light));transform:scale(1.02);}
+    .btn-wish-cart.added{background:linear-gradient(135deg,#2a5a2a,#3a8a3a);}
+    .btn-wish-view{padding:10px 14px;border:1px solid var(--glass-border);color:var(--text-muted);border-radius:6px;font-family:'Montserrat',sans-serif;font-size:0.65rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;transition:var(--transition);}
+    .btn-wish-view:hover{border-color:var(--gold);color:var(--gold);}
+
+    /* EMPTY STATE */
+    .empty-state{text-align:center;padding:100px 20px;display:none;}
+    .empty-state.show{display:block;}
+    .empty-icon{font-size:64px;margin-bottom:20px;opacity:0.3;}
+    .empty-title{font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--text);margin-bottom:12px;}
+    .empty-sub{font-size:0.85rem;color:var(--text-muted);margin-bottom:32px;}
+    .btn-explore{display:inline-flex;align-items:center;gap:8px;padding:14px 36px;background:linear-gradient(135deg,var(--gold-dark),var(--gold));color:var(--black);border-radius:4px;font-family:'Montserrat',sans-serif;font-size:0.7rem;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;transition:var(--transition);}
+    .btn-explore:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(201,168,76,0.3);}
+
+    /* TOAST */
+    .toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--dark-2);border:1px solid var(--glass-border);border-radius:8px;padding:12px 24px;font-size:0.75rem;font-weight:500;color:var(--text);box-shadow:0 10px 40px rgba(0,0,0,0.4);z-index:9999;opacity:0;transition:opacity 0.3s,transform 0.3s;pointer-events:none;white-space:nowrap;}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+    @media(max-width:900px){.wishlist-grid{grid-template-columns:repeat(2,1fr);}}
+    @media(max-width:600px){
+      .wishlist-grid{grid-template-columns:1fr;}
+      .nav-container{padding:0 20px;}
+      .toolbar{padding:20px;}
+      .wishlist-container{padding:0 20px 60px;}
+      .page-hero{padding:100px 20px 40px;}
+      .nav-links{display:none;}
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">SOLOWAVE</a>
+      <div class="nav-links">
+        <a href="index.html#collection">Collection</a>
+        <a href="index.html#about">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="orders.html">My Orders</a>
+      </div>
+      <a href="index.html" class="nav-cart" title="Cart">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </a>
+    </div>
+  </nav>
+
+  <div class="page-hero">
+    <div class="page-eyebrow">Your Curated Selection</div>
+    <h1 class="page-title" id="pageTitle">My Wishlist</h1>
+    <p class="page-count" id="pageCount">Loading…</p>
+  </div>
+
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <select class="sort-select" id="sortSelect" onchange="renderWishlist()">
+        <option value="default">Sort: Default</option>
+        <option value="price-asc">Price: Low → High</option>
+        <option value="price-desc">Price: High → Low</option>
+        <option value="name-asc">Name: A → Z</option>
+      </select>
+    </div>
+    <div class="toolbar-right">
+      <button class="btn-toolbar btn-add-all" onclick="addAllToCart()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        Add All to Cart
+      </button>
+      <button class="btn-toolbar btn-clear" onclick="clearWishlist()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+        Clear All
+      </button>
+    </div>
+  </div>
+
+  <div class="wishlist-container">
+    <div class="wishlist-grid" id="wishlistGrid"></div>
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">♡</div>
+      <div class="empty-title">Your wishlist is empty</div>
+      <div class="empty-sub">Discover our timepieces and save your favourites here.</div>
+      <a href="index.html#collection" class="btn-explore">Explore Collection →</a>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script type="module" src="db.js"></script>
+<script src="watches-data.js"></script>
+  <script>
+    // Theme
+    (function(){
+      var t = localStorage.getItem('solowaveTheme');
+      if(!t) t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'night' : 'day';
+      if(t === 'day') document.body.classList.add('day-mode');
+    })();
+
+    var wishlist = JSON.parse(localStorage.getItem('solowaveWishlist') || '[]');
+    var cart     = JSON.parse(localStorage.getItem('solowaveCart')     || '[]');
+
+    function saveWishlist(){
+  localStorage.setItem('solowaveWishlist', JSON.stringify(wishlist));
+  if(typeof window.swSyncWishlist === 'function') window.swSyncWishlist(wishlist);
+}
+    function saveCart()    { localStorage.setItem('solowaveCart',     JSON.stringify(cart));     }
+
+    function getWatchData(name){
+      if(typeof WATCHES_DATA === 'undefined') return null;
+      return WATCHES_DATA.find(function(w){ return w.name === name; }) || null;
+    }
+
+    function parsePrice(display){
+      return parseInt(String(display || '').replace(/[^0-9]/g,''), 10) || 0;
+    }
+
+    function showToast(msg){
+      var t = document.getElementById('toast');
+      if(!t) return;
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(function(){ t.classList.remove('show'); }, 2800);
+    }
+
+    function updateCartBadge(){
+      var total = cart.reduce(function(s,i){ return s + i.qty; }, 0);
+      var b = document.getElementById('cartBadge');
+      if(b){ b.textContent = total; b.classList.toggle('visible', total > 0); }
+    }
+
+    function addToCart(name){
+      var w = getWatchData(name);
+      if(!w) return;
+      var found = false;
+      for(var i = 0; i < cart.length; i++){
+        if(cart[i].name === name){ cart[i].qty++; found = true; break; }
+      }
+      if(!found) cart.push({ name: w.name, price: w.display, img: w.img, series: w.series, qty: 1 });
+      saveCart();
+      updateCartBadge();
+      showToast(name + ' added to cart ✓');
+    }
+
+    function removeFromWishlist(name){
+      var idx = wishlist.indexOf(name);
+      if(idx !== -1) wishlist.splice(idx, 1);
+      saveWishlist();
+      // Animate card out
+      var card = document.getElementById('wcard-' + btoa(name).replace(/=/g,''));
+      if(card){
+        card.classList.add('removing');
+        setTimeout(function(){ renderWishlist(); }, 350);
+      } else {
+        renderWishlist();
+      }
+      showToast('Removed from wishlist');
+    }
+
+    function addAllToCart(){
+      if(!wishlist.length){ showToast('Wishlist is empty'); return; }
+      wishlist.forEach(function(name){ addToCart(name); });
+      showToast('All ' + wishlist.length + ' watches added to cart ✓');
+    }
+
+    function clearWishlist(){
+      if(!wishlist.length){ showToast('Wishlist is already empty'); return; }
+      if(!confirm('Clear your entire wishlist?')) return;
+      wishlist = [];
+      saveWishlist();
+      renderWishlist();
+      showToast('Wishlist cleared');
+    }
+
+    function renderWishlist(){
+      var sort  = document.getElementById('sortSelect').value;
+      var grid  = document.getElementById('wishlistGrid');
+      var empty = document.getElementById('emptyState');
+      var count = document.getElementById('pageCount');
+      var title = document.getElementById('pageTitle');
+
+      // Reload from storage
+      wishlist = JSON.parse(localStorage.getItem('solowaveWishlist') || '[]');
+
+      title.textContent = 'My Wishlist (' + wishlist.length + ')';
+      document.title    = 'My Wishlist (' + wishlist.length + ') — Solowave';
+
+      if(!wishlist.length){
+        grid.innerHTML = '';
+        empty.classList.add('show');
+        count.textContent = '0 items saved';
+        return;
+      }
+      empty.classList.remove('show');
+      count.textContent = wishlist.length + (wishlist.length === 1 ? ' item saved' : ' items saved');
+
+      // Build data array
+      var items = wishlist.map(function(name){
+        var w = getWatchData(name);
+        return w ? w : { name: name, display: '—', series: '—', img: '', badge: '', price: '0' };
+      });
+
+      // Sort
+      if(sort === 'price-asc')  items.sort(function(a,b){ return parsePrice(a.display) - parsePrice(b.display); });
+      if(sort === 'price-desc') items.sort(function(a,b){ return parsePrice(b.display) - parsePrice(a.display); });
+      if(sort === 'name-asc')   items.sort(function(a,b){ return a.name < b.name ? -1 : 1; });
+
+      grid.innerHTML = items.map(function(w){
+        var safeId = btoa(w.name).replace(/=/g,'');
+        return '<div class="wish-card" id="wcard-' + safeId + '">'
+          + '<div class="wish-img-wrap">'
+          + (w.img ? '<img src="' + w.img + '" alt="' + w.name + '" class="wish-img" loading="lazy" />' : '')
+          + '<button class="wish-remove" onclick="removeFromWishlist(\'' + w.name.replace(/'/g,"\\'") + '\')" title="Remove from wishlist">'
+          + '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
+          + '</button>'
+          + (w.badge ? '<div class="wish-badge">' + w.badge + '</div>' : '')
+          + '</div>'
+          + '<div class="wish-info">'
+          + '<div class="wish-series">' + (w.series || '') + '</div>'
+          + '<div class="wish-name">' + w.name + '</div>'
+          + '<div class="wish-price">' + (w.display || '') + '</div>'
+          + '<div class="wish-actions">'
+          + '<button class="btn-wish-cart" id="cartbtn-' + safeId + '" onclick="handleCartBtn(\'' + w.name.replace(/'/g,"\\'") + '\',\'' + safeId + '\')">+ Add to Cart</button>'
+          + '<a href="product.html?name=' + encodeURIComponent(w.name) + '" class="btn-wish-view">View</a>'
+          + '</div></div></div>';
+      }).join('');
+    }
+
+    function handleCartBtn(name, safeId){
+      addToCart(name);
+      var btn = document.getElementById('cartbtn-' + safeId);
+      if(btn){
+        var orig = btn.textContent;
+        btn.textContent = '✓ Added';
+        btn.classList.add('added');
+        setTimeout(function(){ btn.textContent = orig; btn.classList.remove('added'); }, 1800);
+      }
+    }
+
+    // Init
+    updateCartBadge();
+    renderWishlist();
+  </script>
+<script src="fullstack.js"></script>
+</body>
+</html>
